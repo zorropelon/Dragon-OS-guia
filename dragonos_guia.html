@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DragonOS — Guía de Herramientas por Categoría</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────── */
+:root {
+  --bg:        #0D1117;
+  --surface:   #161B22;
+  --surface2:  #1C2128;
+  --border:    #30363D;
+  --border2:   #21262D;
+  --text:      #CDD9E5;
+  --text-muted:#768390;
+  --text-dim:  #444C56;
+  --cyan:      #39C5CF;
+  --cyan-dim:  #1B4F52;
+  --purple:    #8B5CF6;
+  --amber:     #F0883E;
+  --amber-dim: #3D2307;
+  --green:     #3FB950;
+  --green-dim: #0D2A14;
+  --orange:    #E3A000;
+  --orange-dim:#2D200A;
+  --red:       #F85149;
+  --red-dim:   #3B0D0D;
+  --sidebar-w: 280px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── RESET ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────── */
+#app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ────────────────────────────────────────────── */
+#sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--border2);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  padding: 24px 0 40px;
+  z-index: 100;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+#sidebar::-webkit-scrollbar { width: 4px; }
+#sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.sidebar-logo {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 16px;
+}
+.sidebar-logo .logo-icon {
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+.sidebar-logo .logo-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.sidebar-logo .logo-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+}
+.toc-h2 > a {
+  display: block;
+  padding: 7px 20px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+}
+.toc-h2 > a:hover,
+.toc-h2.active > a {
+  color: var(--cyan);
+  border-left-color: var(--cyan);
+  background: var(--cyan-dim);
+}
+.toc-h3 > a {
+  display: block;
+  padding: 4px 20px 4px 30px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.toc-h3 > a:hover { color: var(--text); }
+
+/* ── MAIN CONTENT ───────────────────────────────────────── */
+#main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  max-width: 900px;
+  padding: 48px 56px 80px;
+}
+
+/* ── HEADER ─────────────────────────────────────────────── */
+.page-header {
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.page-header h1 span {
+  color: var(--cyan);
+}
+.header-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────── */
+#main h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 56px 0 20px;
+  padding: 20px 20px 20px 24px;
+  background: var(--surface);
+  border-radius: 8px;
+  border-left: 4px solid var(--cyan);
+  position: relative;
+}
+#main h2::before {
+  content: attr(data-n);
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--border);
+  letter-spacing: -2px;
+  user-select: none;
+}
+
+#main h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cyan);
+  margin: 36px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#main h3::before {
+  content: "▸";
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+#main h4 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 24px 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+#main p {
+  margin-bottom: 14px;
+  color: var(--text);
+}
+
+#main strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+#main em {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ── LISTS ──────────────────────────────────────────────── */
+#main ul, #main ol {
+  margin: 8px 0 16px 20px;
+}
+#main li {
+  margin-bottom: 6px;
+  color: var(--text);
+}
+#main li::marker {
+  color: var(--cyan);
+}
+
+/* ── CODE ───────────────────────────────────────────────── */
+#main code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--amber-dim);
+  color: var(--amber);
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #4a2e0a;
+}
+#main pre {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--amber);
+  line-height: 1.6;
+}
+#main pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* ── TABLES ─────────────────────────────────────────────── */
+#main table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 24px;
+  font-size: 13.5px;
+}
+#main th {
+  background: var(--surface2);
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--cyan);
+}
+#main td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border2);
+  color: var(--text);
+  vertical-align: top;
+}
+#main tr:hover td {
+  background: var(--surface2);
+}
+
+/* ── SPECIAL PARAGRAPHS ─────────────────────────────────── */
+#main .hw-min,
+#main .hw-ideal,
+#main .hw-req {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 5px;
+  margin: 10px 0;
+  background: var(--green-dim);
+  border: 1px solid #1a4a24;
+  font-size: 14px;
+}
+#main .hw-min strong,
+#main .hw-ideal strong,
+#main .hw-req strong {
+  color: var(--green);
+  white-space: nowrap;
+}
+
+#main .legal-note {
+  background: var(--red-dim);
+  border: 1px solid #5c1a1a;
+  border-left: 3px solid var(--red);
+  border-radius: 5px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  font-size: 13.5px;
+}
+#main .legal-note strong {
+  color: var(--red);
+}
+
+#main .freq-cr {
+  background: var(--orange-dim);
+  border: 1px solid #4a3010;
+  border-radius: 5px;
+  padding: 10px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+}
+#main .freq-cr strong {
+  color: var(--orange);
+}
+
+/* ── BLOCKQUOTE (intro de sección) ─────────────────────── */
+#main blockquote {
+  border-left: 3px solid var(--purple);
+  background: var(--surface2);
+  margin: 16px 0 24px;
+  padding: 14px 18px;
+  border-radius: 0 6px 6px 0;
+}
+#main blockquote p {
+  margin: 0;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* ── HR ─────────────────────────────────────────────────── */
+#main hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 40px 0;
+}
+
+/* ── APÉNDICES ──────────────────────────────────────────── */
+#main h2[id^="apendice"] {
+  border-left-color: var(--purple);
+}
+
+/* ── SCROLL TOP ─────────────────────────────────────────── */
+#scroll-top {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 40px;
+  height: 40px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.2s;
+  z-index: 200;
+}
+#scroll-top.visible { opacity: 1; }
+#scroll-top:hover { background: var(--surface); color: var(--cyan); transform: translateY(-2px); }
+
+/* ── TOGGLE SIDEBAR (mobile) ────────────────────────────── */
+#toggle-sidebar {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 300;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 260px; }
+  #main { padding: 32px 28px 60px; }
+}
+@media (max-width: 700px) {
+  #sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; padding: 60px 20px 60px; }
+  #toggle-sidebar { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+  #main h2 { font-size: 18px; }
+  #main h2::before { display: none; }
+}
+@media print {
+  #sidebar, #scroll-top, #toggle-sidebar { display: none !important; }
+  #main { margin: 0; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<button id="toggle-sidebar" aria-label="Menú">☰ Menú</button>
+
+<div id="app">
+  <nav id="sidebar" aria-label="Tabla de contenidos">
+    <div class="sidebar-logo">
+      <div class="logo-icon">📡</div>
+      <div class="logo-title">DragonOS</div>
+      <div class="logo-sub">Guía de Herramientas SDR</div>
+    </div>
+    <ul class="toc-list">
+      <li class="toc-h2"><a href="#tabla-de-contenidos">Tabla de contenidos</a></li>
+<li class="toc-h2"><a href="#1-monitoreo-aeronautico">1. Monitoreo aeronáutico</a></li>
+<li class="toc-h2"><a href="#2-redes-celulares-telecom">2. Redes celulares / telecom</a></li>
+<li class="toc-h2"><a href="#3-wifi-y-redes-inalambricas">3. WiFi y redes inalámbricas</a></li>
+<li class="toc-h2"><a href="#4-satelites">4. Satélites</a></li>
+<li class="toc-h2"><a href="#5-trunking-y-radiocomunicaciones-terrestres">5. Trunking y radiocomunicaciones terrestres</a></li>
+<li class="toc-h2"><a href="#6-analisis-de-senales-digitales">6. Análisis de señales digitales</a></li>
+<li class="toc-h2"><a href="#7-transmision-y-herramientas-ofensivas">7. Transmisión y herramientas ofensivas</a></li>
+<li class="toc-h2"><a href="#8-decodificadores-miscelaneos">8. Decodificadores misceláneos</a></li>
+<li class="toc-h2"><a href="#apendice-a-hardware-compatible">Apéndice A — Hardware compatible</a></li>
+<li class="toc-h2"><a href="#apendice-b-frecuencias-de-referencia-rapida">Apéndice B — Frecuencias de referencia rápida</a></li>
+<li class="toc-h2"><a href="#apendice-c-glosario-de-siglas">Apéndice C — Glosario de siglas</a></li>
+    </ul>
+  </nav>
+
+  <main id="main">
+    <h1 id="dragonos-guia-de-herramientas-por-categoria">DragonOS — Guía de Herramientas por Categoría</h1>
+<blockquote>
+<p>Guía de referencia para entender qué hace cada herramienta incluida en DragonOS, para qué sirve, qué hardware necesitás, y cuáles son sus posibilidades reales. No es un tutorial paso a paso — es el mapa mental que falta.</p>
+</blockquote>
+<p><strong>Versión de referencia:</strong> DragonOS Noble (24.04)<br />
+<strong>Última actualización:</strong> Junio 2025<br />
+<strong>Hardware de referencia:</strong> RTL-SDR v3/v4, HackRF One, Airspy R2/Mini/HF+, LimeSDR</p>
+<hr />
+<h2 id="tabla-de-contenidos">Tabla de contenidos</h2>
+<ol>
+<li><a href="#1-monitoreo-aeronáutico">Monitoreo aeronáutico</a></li>
+<li><a href="#2-redes-celulares--telecom">Redes celulares / telecom</a></li>
+<li><a href="#3-wifi-y-redes-inalámbricas">WiFi y redes inalámbricas</a></li>
+<li><a href="#4-satélites">Satélites</a></li>
+<li><a href="#5-trunking-y-radiocomunicaciones-terrestres">Trunking y radiocomunicaciones terrestres</a></li>
+<li><a href="#6-análisis-de-señales-digitales">Análisis de señales digitales</a></li>
+<li><a href="#7-transmisión-y-herramientas-ofensivas">Transmisión y herramientas ofensivas</a></li>
+<li><a href="#8-decodificadores-misceláneos">Decodificadores misceláneos</a></li>
+</ol>
+<hr />
+<h2 id="1-monitoreo-aeronautico">1. Monitoreo aeronáutico</h2>
+<blockquote>
+<p><em>Los aviones transmiten datos constantemente en múltiples protocolos. Con SDR podés recibir posición, mensajes de texto, voz, telemetría — sin necesitar nada más que el dongle.</em></p>
+</blockquote>
+<h3 id="11-frontends-visualizacion-aplicable">1.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Visualización de espectro general, plugin ADS-B nativo</td>
+</tr>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Demoduladores de voz aeronáutica AM integrados</td>
+</tr>
+<tr>
+<td><strong>GQRX</strong></td>
+<td>Recepción de voz AM de torre/piloto, monitoreo de banda</td>
+</tr>
+<tr>
+<td><strong>OpenWebRX+</strong></td>
+<td>Acceso remoto vía browser a feeds aeronáuticos</td>
+</tr>
+</tbody>
+</table>
+<h3 id="12-ads-b-dump1090-view1090">1.2 ADS-B — dump1090 / view1090</h3>
+<p><strong>¿Qué es?</strong> ADS-B (Automatic Dependent Surveillance–Broadcast) es el sistema por el cual cada avión comercial transmite continuamente su posición GPS, altitud, velocidad, rumbo y número de vuelo en <strong>1090 MHz</strong>. No es un radar — el avión te dice él mismo dónde está. <code>dump1090</code> es el decodificador estándar que recibe esas transmisiones Mode S y las convierte en datos utilizables.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Crear tu propio radar de tráfico aéreo local en tiempo real
+- Ver en un mapa web (localhost:8080) todos los aviones en un radio de ~200–400 km según la antena
+- Alimentar plataformas comunitarias como FlightAware, ADSBExchange o AirSquitter
+- Recibir posición en tierra (aviones taxiando), no solo en vuelo
+- Exportar datos via TCP (puerto 30003) a otras aplicaciones (Virtual Radar Server, tar1090, etc.)</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR + antena 1090 MHz (la simple dipolo incluida con el dongle funciona)<br />
+<strong>Hardware ideal:</strong> RTL-SDR v3 + antena colineal exterior elevada. Con buena antena se pueden ver aviones a 400+ km.</p>
+<p><strong>Variantes en DragonOS:</strong>
+- <code>dump1090</code> original (Salvatore Sanfilippo) — la base
+- <code>dump1090-mutability</code> — fork con mejor decodificación, paquete Debian nativo
+- <code>dump1090-fa</code> (FlightAware) — versión con alimentación directa a FlightAware
+- <code>view1090</code> — cliente ligero para visualizar datos de un dump1090 corriendo en otro host</p>
+<p><strong>Modo de operación:</strong> Solo CLI, sin GUI propia. El mapa web es un servidor HTTP embebido. Para visualización avanzada se combina con <code>tar1090</code> (mapa moderno) o Virtual Radar Server.</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/local/bin/dump1090</code> o <code>/usr/src/</code> según versión.<br />
+<strong>GitHub:</strong> <code>github.com/antirez/dump1090</code> (original) / <code>github.com/flightaware/dump1090</code> (FA)</p>
+<hr />
+<h3 id="13-acars-acarsdec">1.3 ACARS — acarsdec</h3>
+<p><strong>¿Qué es?</strong> ACARS (Aircraft Communications Addressing and Reporting System) es un sistema de mensajería de texto entre aviones y tierra que existe desde los años 70 y sigue activo. Funciona en VHF (~129–136 MHz). Los mensajes incluyen: clearances de ATC, reportes meteorológicos, estado de sistemas del avión, información de gate, estimados de llegada, y mensajes operacionales de aerolínea. <code>acarsdec</code> es el decodificador multicanal para SDR.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Leer mensajes de texto reales entre aerolíneas y sus aviones en vuelo
+- Monitorear hasta 8 frecuencias simultáneamente con un solo RTL-SDR
+- Ver clearances CPDLC (Controller-Pilot Data Link Communications) y reportes ADS-C
+- Alimentar bases de datos locales (SQLite via <code>acarsserv</code>) o plataformas como airframes.io
+- Exportar en JSON para procesamiento propio (Node-RED, scripts, dashboards)</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR + antena VHF. Funciona indoor aunque con alcance reducido.<br />
+<strong>Hardware ideal:</strong> Airspy R2 o SDRplay — mayor ancho de banda permite cubrir más frecuencias.</p>
+<p><strong>Frecuencias principales (región IARU R2 / Latinoamérica):</strong>
+<code>129.125</code> / <code>130.025</code> / <code>130.425</code> / <code>131.125</code> / <code>131.525</code> / <code>131.550</code> / <code>131.725</code> / <code>131.825</code> MHz</p>
+<p><strong>Particularidad clave:</strong> Todas las frecuencias a monitorear deben estar dentro de un rango de 2 MHz (limitación del RTL-SDR). Para cubrir más, se necesitan múltiples dongles o hardware con mayor ancho de banda.</p>
+<p><strong>Modos de salida:</strong> texto plano, JSON, PlanePlotter UDP, SQLite, MQTT — lo que lo hace fácil de integrar.</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/acarsdec/</code><br />
+<strong>GitHub:</strong> <code>github.com/TLeconte/acarsdec</code></p>
+<hr />
+<h3 id="14-vdl-mode-2-dumpvdl2">1.4 VDL Mode 2 — dumpvdl2</h3>
+<p><strong>¿Qué es?</strong> VDL Mode 2 (VHF Digital Link Mode 2) es el sucesor digital de ACARS. Usa la misma banda VHF (~136 MHz) pero con modulación digital D8PSK a 31.5 kbps — mucho más eficiente. Está reemplazando progresivamente a ACARS en rutas de alta densidad. Transmite los mismos tipos de mensajes que ACARS pero con mayor capacidad y soporte para protocolos avanzados (CPDLC, ADS-C, CM). <code>dumpvdl2</code> es el decodificador de referencia en Linux, escrito por el mismo autor que <code>dumphfdl</code> y RTL-Airband.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Decodificar mensajes CPDLC (instrucciones de ATC por datos, no voz)
+- Recibir reportes ADS-C de posición de aviones sobre rutas oceánicas
+- Monitorear hasta 8 canales VDL2 simultáneamente
+- Exportar via JSON, UDP, ZeroMQ para integración con otros sistemas
+- Alimentar airframes.io o bases de datos propias</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR. Funciona, aunque VDL2 es más exigente en SNR que ACARS analógico.<br />
+<strong>Hardware ideal:</strong> Airspy o SDRplay para mejor decodificación con mayor ancho de banda.</p>
+<p><strong>Frecuencia principal:</strong> <code>136.975 MHz</code> (canal común / CSC). Secundarias: <code>136.725</code>, <code>136.775</code>, <code>136.875</code> MHz.</p>
+<p><strong>Diferencia con ACARS:</strong> VDL2 es digital — no se "escucha" como beeps, se ve como ráfagas de datos. Mayor densidad de información por mensaje, protocolo más rico (X.25, ICAO Context Management).</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/dumpvdl2/</code><br />
+<strong>GitHub:</strong> <code>github.com/szpajder/dumpvdl2</code></p>
+<hr />
+<h3 id="15-hf-dl-dumphfdl">1.5 HF-DL — dumpHFDL</h3>
+<p><strong>¿Qué es?</strong> HFDL (High Frequency Data Link) es la versión de ACARS que corre en HF (shortwave, 3–30 MHz) en lugar de VHF. Se usa específicamente para vuelos sobre océanos y áreas remotas donde no hay cobertura VHF ni satélite. Una red de estaciones terrestres distribuidas globalmente mantiene el sistema activo. Los aviones sobre el Atlántico, Pacífico y Ártico lo usan como respaldo o primario. <code>dumphfdl</code> (mismo autor que dumpvdl2) es el único decodificador multicanal open source para Linux.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Rastrear vuelos transoceánicos que no aparecen en FlightRadar24
+- Recibir reportes de posición ADS-C de vuelos sobre el Atlántico desde Costa Rica
+- Monitorear múltiples subandas HF simultáneamente
+- Ver el contenido de mensajes ACARS/CPDLC sobre HF</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR v3 en modo direct sampling (acceso a HF). Funciona pero con limitaciones serias de sensibilidad.<br />
+<strong>Hardware ideal:</strong> Airspy HF+ o SDRplay RSP1A — el HF requiere buena sensibilidad. Antena de hilo largo (wire antenna) exterior.</p>
+<p><strong>Particularidad crítica:</strong> HF tiene propagación ionosférica — las señales rebotan en la ionósfera. Desde Costa Rica podés recibir vuelos sobre el Atlántico Norte o incluso el Pacífico si las condiciones son correctas. La recepción varía enormemente con la hora del día y el ciclo solar.</p>
+<p><strong>Subandas HFDL activas (MHz):</strong> 2.998 / 4.681 / 5.652 / 6.532 / 8.825 / 10.081 / 11.384 / 13.276 / 17.901 / 21.934</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/dumphfdl/</code><br />
+<strong>GitHub:</strong> <code>github.com/szpajder/dumphfdl</code></p>
+<hr />
+<h3 id="16-l-band-inmarsat-jaero-sdrreceiver">1.6 L-Band / Inmarsat — Jaero + SDRReceiver</h3>
+<p><strong>¿Qué es?</strong> Inmarsat es una red de satélites geoestacionarios que provee comunicaciones a aviones sobre océanos. Transmite en L-Band (~1.545–1.555 GHz). Los canales aeronáuticos (AERO) llevan mensajes ACARS, ADS-C, CPDLC y voz. A diferencia de Iridium (LEO), Inmarsat está fijo en el cielo — apuntás la antena una vez y listo. <code>Jaero</code> es el decodificador con GUI. <code>SDRReceiver</code> es el frontend que alimenta a Jaero con audio demodulado.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Recibir mensajes ACARS y CPDLC de vuelos sobre el Atlántico y Pacífico vía satélite
+- Ver posición ADS-C de aviones que no emiten ADS-B (sobre océanos)
+- Decodificar voz aeronáutica satelital (con hardware adecuado)
+- Alimentar airframes.io con datos L-Band</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR + antena de parche L-Band (~$15–30). El satélite Inmarsat-4 cubre las Américas desde ~25°W.<br />
+<strong>Hardware ideal:</strong> SDRplay RSP1A o Airspy con LNA dedicado a 1.5 GHz (Nooelec SAWbird+).</p>
+<p><strong>Antena:</strong> La clave está en la antena. Una simple antena de parche pasiva de 1.5 GHz apuntada al satélite es suficiente. No necesitás rotador — el satélite es geoestacionario. Desde Costa Rica el satélite principal (I4-F3) está al norte con elevación ~50°.</p>
+<p><strong>Flujo de trabajo:</strong> <code>SDRReceiver</code> (configurado con .ini del satélite) → audio demodulado → <code>Jaero</code> (decodifica AERO ACARS). Se pueden correr múltiples instancias de Jaero para cubrir varios VFOs simultáneamente.</p>
+<p><strong>Puerto en DragonOS:</strong> Jaero en menú de aplicaciones / <code>SDRReceiver</code> en <code>/usr/local/bin/</code></p>
+<hr />
+<h3 id="17-iridium-iridium-toolkit-gr-iridium">1.7 Iridium — iridium-toolkit / GR-Iridium</h3>
+<p><strong>¿Qué es?</strong> Iridium es una constelación de 66 satélites LEO que orbitan a ~780 km. A diferencia de Inmarsat (geoestacionario), los satélites Iridium pasan sobre tu cabeza constantemente. Transmiten en L-Band (1616–1626.5 MHz) en ráfagas cortas (bursts) repartidas en múltiples frecuencias. Los aviones usan Iridium para voz y datos sobre áreas remotas. <code>gr-iridium</code> captura los bursts con GNU Radio. <code>iridium-toolkit</code> (Chaos Computer Club Munich) los decodifica.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Decodificar mensajes ACARS de vuelos que usan Iridium como enlace
+- Interceptar tráfico de balizas de emergencia (EPIRB, PLB) — uso legal para investigación
+- Ver actividad de la constelación completa en tiempo real
+- Análisis de seguridad del protocolo Iridium (investigación académica)</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR. Funciona pero captura poca fracción del espectro Iridium (2.4 MHz de 10 MHz totales).<br />
+<strong>Hardware ideal:</strong> HackRF One (20 MHz de ancho de banda) — captura toda la banda Iridium de una. CPU potente requerida — es intensivo.</p>
+<p><strong>Particularidad crítica:</strong> Al ser LEO, los satélites se mueven — hay corrección Doppler significativa. El procesamiento es mucho más complejo que Inmarsat. No recomendado como primer proyecto SDR.<br />
+<strong>Antena:</strong> Omnidireccional L-Band con vista al cielo despejada. Parche o helicoidal funciona.</p>
+<p><strong>Flujo de trabajo:</strong> <code>gr-iridium</code> (captura bursts) → archivo de tramas → <code>iridium-toolkit</code> (decodifica) → datos ACARS/voz</p>
+<p><strong>Puerto en DragonOS:</strong> <code>GR-Iridium</code> en <code>/usr/src/</code> + <code>iridium-toolkit</code> en <code>/usr/src/</code><br />
+<strong>GitHub:</strong> <code>github.com/muccc/iridium-toolkit</code> / <code>github.com/dholm/gr-iridium</code></p>
+<hr />
+<h2 id="2-redes-celulares-telecom">2. Redes celulares / telecom</h2>
+<blockquote>
+<p><em>Herramientas para análisis pasivo (y activo con hardware apropiado) de redes GSM, LTE y 5G. Zona de uso más delicado legalmente — contexto de investigación y auditoría.</em></p>
+</blockquote>
+<h3 id="21-frontends-visualizacion-aplicable">2.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Demodulación GSM, visualización de celdas LTE, análisis de tráfico</td>
+</tr>
+<tr>
+<td><strong>GQRX</strong></td>
+<td>Monitoreo pasivo de espectro celular, identificación de bandas activas</td>
+</tr>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Barrido de espectro para identificar celdas activas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-gsm-gr-gsm-imsi-catcher">2.2 GSM — gr-gsm / IMSI-catcher</h3>
+<p><strong>¿Qué es?</strong> GSM (2G) es la generación más vieja de redes celulares, activa desde los 90. Aunque muchos países están apagando la red 2G, en Latinoamérica sigue activa (Claro y Movistar en Costa Rica usan 850 MHz para GSM). <code>gr-gsm</code> es un conjunto de bloques GNU Radio que permite recibir y decodificar transmisiones GSM con un RTL-SDR. Es básicamente un analizador de protocolo celular pasivo.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Decodificar mensajes de control del canal de broadcast (C0) de cualquier celda GSM cercana
+- Ver configuración de la celda, handovers, paging y mensajes del sistema
+- Exportar tráfico GSM a Wireshark en formato GSMTAP (puerto UDP 4729) para análisis detallado
+- Identificar celdas activas, su ARFCN, LAC (Location Area Code) y Cell ID
+- Con <code>IMSI-catcher</code>: registrar los IMSIs de dispositivos GSM en el área (solo control channel — no contenido)</p>
+<p><strong>Lo que NO podés hacer (sin claves de encriptación):</strong> leer voz, SMS o datos. El tráfico de usuario en GSM va encriptado con A5/1 o A5/3. Decodificarlo requiere la clave Ki del SIM, que es ilegal obtener sin autorización.</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> RTL-SDR. GSM usa canales de 200 kHz — perfectamente manejable.<br />
+<strong>Frecuencias en Costa Rica:</strong> GSM 850 downlink <code>869–894 MHz</code> (Claro / Movistar)</p>
+<p><strong>Herramientas incluidas:</strong>
+- <code>grgsm_livemon</code> — GUI de monitoreo en tiempo real con espectro
+- <code>grgsm_capture</code> — captura a archivo para análisis posterior
+- <code>grgsm_decode</code> — decodifica capturas guardadas, soporta A5/1, A5/2, A5/3
+- <code>IMSI-catcher</code> — script que registra IMSIs detectados en el canal de control</p>
+<p class="legal-note"><strong>⚠️ Nota legal:</strong> recibir es legal en la mayoría de jurisdicciones. Interceptar tráfico de terceros o usar IMSIs para trackear personas es ilegal en Costa Rica (Ley 8968 de Protección de Datos).</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/gr-gsm/</code><br />
+<strong>GitHub:</strong> <code>github.com/ptrkrysik/gr-gsm</code></p>
+<hr />
+<h3 id="23-lte-srsran-lte-cell-scanner">2.3 LTE — srsRAN / LTE-Cell-Scanner</h3>
+<p><strong>¿Qué es?</strong> <code>srsRAN</code> es el stack de software más completo para trabajar con redes 4G LTE y 5G NR de forma open source. Desarrollado por Software Radio Systems (SRS), permite construir una red LTE/5G completa en software. Tiene tres componentes principales: <code>srsUE</code> (emula un dispositivo móvil), <code>srsENB</code> (emula una estación base eNodeB), y <code>srsEPC</code> (core de red). <code>LTE-Cell-Scanner</code> es una herramienta independiente más ligera para detección pasiva de celdas.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- <strong>Pasivo (RTL-SDR):</strong> escanear el espectro LTE y detectar celdas activas — ver banda, EARFCN, PCI (Physical Cell ID), señal
+- <strong>Activo (LimeSDR/BladeRF/USRP):</strong> construir tu propia red LTE privada completa para investigación
+- Conectar teléfonos reales con SIMs programables a tu red LTE propia
+- Estudiar el protocolo LTE completo desde la capa física hasta la capa de aplicación
+- Desarrollar y testear aplicaciones de red celular sin depender de operadores</p>
+<p><strong>Hardware para uso pasivo (solo escucha):</strong> RTL-SDR funciona con LTE-Cell-Scanner<br />
+<strong>Hardware para uso activo (red propia):</strong> LimeSDR, BladeRF xA4/xA9 o USRP B210 — full-duplex obligatorio</p>
+<p><strong>Frecuencias LTE en Costa Rica:</strong>
+- Band 4 (AWS): downlink <code>2110–2155 MHz</code>, uplink <code>1710–1755 MHz</code> (Claro, Movistar, ICE)
+- Band 2 (PCS): downlink <code>1930–1990 MHz</code> (ICE)
+- Band 28 (700 MHz): <code>758–803 MHz</code> downlink (ICE, expansión rural)</p>
+<p><strong>Nota crítica:</strong> operar una red LTE privada que transmite en frecuencias licenciadas es ilegal sin permiso de SUTEL en Costa Rica. Para research se usan atenuadores y jaulas de Faraday, o frecuencias ISM con hardware adecuado.</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/srsRAN_4G/</code> y <code>/usr/src/srsRAN/</code><br />
+<strong>Documentación:</strong> <code>docs.srsran.com</code></p>
+<hr />
+<h3 id="24-osmocombb">2.4 OsmocomBB</h3>
+<p><strong>¿Qué es?</strong> <code>OsmocomBB</code> es firmware open source para el procesador de banda base de teléfonos celulares viejos (específicamente los basados en el chipset Calypso de Texas Instruments — Motorola C115, C123, C155, etc.). Reemplaza el firmware propietario del teléfono y permite usar el dispositivo como un analizador GSM programable. A diferencia de gr-gsm (que corre en una PC con SDR), OsmocomBB corre en el chipset de baseband del teléfono físico.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Convertir un teléfono viejo en un sniffer GSM activo que puede escuchar uplink y downlink
+- Realizar ataques de seguridad de investigación: IMSI catching, A5/1 cracking (con rainbow tables)
+- Detectar IMSI catchers (stingrays) en el entorno — el teléfono puede ver si una celda se comporta de forma anómala
+- Desarrollar aplicaciones de bajo nivel sobre el stack GSM
+- Experimentar con el protocolo a nivel de burst individual</p>
+<p class="hw-req"><strong>Hardware requerido:</strong> teléfono con chipset Calypso (Motorola C1xx, Sony Ericsson T190, etc.) + cable de debug especial (cable serial modificado). <strong>No funciona con SDR moderno.</strong></p>
+<p><strong>Estado actual:</strong> proyecto maduro pero de nicho. Los teléfonos Calypso son cada vez más difíciles de conseguir. La red GSM en muchos países se está apagando, reduciendo su utilidad práctica.</p>
+<p><strong>Nota:</strong> OsmocomBB tiene múltiples sub-proyectos útiles en DragonOS: <code>OsmoTRX</code> (interfaz RF para BTS), <code>OsmoNITB</code> / <code>OsmoMSC</code> (core GSM), <code>OsmoHLR</code> (registro de abonados).</p>
+<p><strong>GitHub:</strong> <code>github.com/osmocom/osmocom-bb</code></p>
+<hr />
+<h3 id="25-calypsobts-yatebts">2.5 CalypsoBTS / YateBTS</h3>
+<p><strong>¿Qué es?</strong> Ambas son implementaciones de estaciones base GSM (BTS) en software. <code>CalypsoBTS</code> convierte un teléfono Calypso en una mini-BTS. <code>YateBTS</code> es un fork de OpenBTS que usa el motor de telefonía Yate — permite crear una red GSM 2G completa y funcional con SDR, incluyendo llamadas, SMS y datos GPRS entre dispositivos registrados. Cemaxecuter demostró en DragonOS una llamada en conferencia entre Georgia (EE.UU.), California y Australia usando YateBTS + BladeRF.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Crear una red GSM privada completa — teléfonos viejos pueden hacer llamadas y enviar SMS entre sí
+- Estudiar el core de red GSM: MSC, HLR, SGSN — toda la arquitectura en una sola PC
+- Conectar la red a VoIP/SIP para enrutar llamadas hacia el exterior
+- Investigar vulnerabilidades del protocolo GSM en entorno controlado
+- Mantener vivos teléfonos 2G que ya no tienen red del operador</p>
+<p class="hw-req"><strong>Hardware requerido:</strong> SDR full-duplex — BladeRF xA4, LimeSDR, o USRP. El RTL-SDR no sirve (solo RX).<br />
+<strong>Hardware mínimo real:</strong> BladeRF micro xA4 (~$200) — el más económico que funciona bien con YateBTS.</p>
+<p><strong>Limitación fundamental:</strong> GSM no tiene autenticación de red hacia el dispositivo — el teléfono se conecta a cualquier BTS sin verificar su identidad. Esto es una vulnerabilidad de diseño inherente al estándar 2G, y la base de los ataques MITM GSM históricos.</p>
+<p class="legal-note"><strong>⚠️ Nota legal:</strong> transmitir en frecuencias licenciadas sin permiso es ilegal. Uso legítimo: laboratorio aislado (jaula de Faraday o atenuadores), demostración académica, museos de tecnología, o con licencia experimental de SUTEL.</p>
+<p><strong>Puerto en DragonOS:</strong> YateBTS en menú de aplicaciones / CalypsoBTS en <code>/usr/src/</code></p>
+<hr />
+<h2 id="3-wifi-y-redes-inalambricas">3. WiFi y redes inalámbricas</h2>
+<blockquote>
+<p><em>Monitoreo de espectro 2.4/5 GHz, detección de redes, análisis de tráfico y herramientas de auditoría de seguridad inalámbrica.</em></p>
+</blockquote>
+<h3 id="31-frontends-visualizacion-aplicable">3.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sparrow-WiFi</strong></td>
+<td>Es en sí mismo un frontend visual para WiFi + SDR combinado</td>
+</tr>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Visualización del espectro 2.4/5 GHz con HackRF</td>
+</tr>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Análisis de espectro banda ISM</td>
+</tr>
+</tbody>
+</table>
+<h3 id="32-kismet">3.2 Kismet</h3>
+<p><strong>¿Qué es?</strong> Kismet es el estándar de facto en monitoreo pasivo de redes inalámbricas en Linux. Es simultáneamente detector de redes, sniffer de paquetes y sistema de detección de intrusiones (WIDS). Su característica clave es que opera <strong>completamente pasivo</strong> — no transmite nada, no inyecta paquetes, solo escucha. Esto lo hace indetectable para los administradores de red. Originalmente solo WiFi, hoy soporta una cantidad asombrosa de protocolos adicionales con el hardware correcto.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Detectar <strong>todas</strong> las redes WiFi en el área, incluyendo redes ocultas (hidden SSID) — las identifica por los probe requests de los clientes aunque no beaconeen su nombre
+- Ver clientes asociados a cada AP, dispositivos que están probando redes, y movimiento de dispositivos entre APs
+- Detectar redes rogues (APs falsos), evil twins, y cambios sospechosos de BSSID
+- <strong>Wardriving</strong> con GPS — mapear redes en movimiento con coordenadas exactas
+- Con hardware adicional: capturar Bluetooth LE/Classic, Zigbee (802.15.4), nRF (teclados/ratones inalámbricos), ADS-B, medidores de luz/agua/gas, termómetros inalámbricos, detectores de humo
+- Exportar a PCAP, JSON, SQLite para análisis posterior con Wireshark u otras herramientas
+- UI web en <code>localhost:2501</code> — no requiere cliente instalado, accesible desde cualquier browser</p>
+<p><strong>Hardware para WiFi:</strong> cualquier adaptador que soporte modo monitor. El chip RTL8812AU (Alfa AWUS036ACH) es el más recomendado en DragonOS.<br />
+<strong>Hardware para extras:</strong> Ubertooth One (Bluetooth), nRF52840 dongle (Zigbee/BLE), RTL-SDR (ADS-B, AMR meters)</p>
+<p><strong>Diferencia clave con otras herramientas:</strong> Kismet no hace nada activo. Si necesitás inyectar paquetes o hacer deauth → Aircrack-ng. Si necesitás ver el espectro RF → Sparrow-WiFi. Kismet es el observador silencioso.</p>
+<p><strong>Puerto en DragonOS:</strong> disponible en menú / <code>kismet</code> en terminal<br />
+<strong>Web:</strong> <code>kismetwireless.net</code> / GitHub: <code>github.com/kismetwireless/kismet</code></p>
+<hr />
+<h3 id="33-sparrow-wifi">3.3 Sparrow-WiFi</h3>
+<p><strong>¿Qué es?</strong> Sparrow-WiFi es el punto donde el análisis WiFi tradicional se encuentra con el SDR. Es una herramienta GUI que combina en una sola pantalla: escaneo de redes WiFi, descubrimiento Bluetooth, visualización del espectro RF en tiempo real (con HackRF o Ubertooth), tracking GPS, y detección de drones por RemoteID. Cemaxecuter lo usa frecuentemente en sus demos de DragonOS Noble con HackRF + Ubertooth.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Ver redes WiFi con sus canales, señal, encriptación y clientes — igual que inSSIDer pero en Linux
+- <strong>Overlay de espectro en tiempo real</strong>: ver el espectro RF de 2.4 GHz (Ubertooth) o 2.4/5 GHz (HackRF) superpuesto sobre el mapa de canales WiFi — invaluable para diagnosticar interferencia no-WiFi
+- Rastrear la fuente física de una señal WiFi en modo "hunt" — muestras múltiples por segundo con telemetría de señal
+- Descubrir dispositivos Bluetooth LE/Classic cercanos — con Ubertooth en modo promiscuo captura también Classic BT
+- Detectar drones por FAA RemoteID (WiFi ASTM F3411 y Bluetooth LE) con mapas y alertas
+- Agente headless en Raspberry Pi para despliegues remotos o montado en dron/rover
+- Integración con Aircrack-ng (plugin Falcon) para operaciones activas controladas</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> adaptador WiFi con modo monitor + adaptador Bluetooth estándar<br />
+<strong>Hardware ideal:</strong> HackRF One + Ubertooth One + adaptador WiFi Alfa AWUS036ACH + GPS</p>
+<p><strong>La combinación HackRF + Ubertooth:</strong> el HackRF hace sweep del espectro completo (0.5 MHz resolución en 2.4 GHz, 2 MHz en 5 GHz) mientras el Ubertooth captura tráfico Bluetooth en modo promiscuo. Juntos dan una imagen completa del espectro ISM que ninguna herramienta sola puede dar.</p>
+<p><strong>Puerto en DragonOS:</strong> menú de aplicaciones (con activación de venv)<br />
+<strong>GitHub:</strong> <code>github.com/ghostop14/sparrow-wifi</code></p>
+<hr />
+<h3 id="34-aircrack-ng">3.4 Aircrack-ng</h3>
+<p><strong>¿Qué es?</strong> Aircrack-ng es el suite de herramientas más conocido para auditoría de seguridad de redes WiFi. No es una herramienta, es un conjunto completo: captura, inyección, análisis y cracking de claves. Está en prácticamente todas las distribuciones de seguridad (Kali, DragonOS, Parrot). Requiere un adaptador WiFi con soporte de modo monitor e inyección de paquetes — la tarjeta integrada del laptop generalmente no sirve.</p>
+<p><strong>Herramientas del suite y qué hace cada una:</strong>
+- <code>airmon-ng</code> — pone la tarjeta en modo monitor (prerequisito para todo lo demás)
+- <code>airodump-ng</code> — captura paquetes, lista redes y clientes, guarda handshakes WPA a archivo
+- <code>aireplay-ng</code> — inyección de paquetes: deauthentication, fake authentication, chopchop, fragmentation
+- <code>aircrack-ng</code> — cracking de claves WEP (estadístico) y WPA/WPA2 (diccionario/fuerza bruta sobre handshake capturado)
+- <code>airbase-ng</code> — crea un AP falso (evil twin, Karmetasploit)
+- <code>airdecap-ng</code> — desencripta archivos PCAP de redes WEP/WPA conocidas</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Auditar la seguridad de tu propia red WiFi — capturar el handshake WPA2 y testear la fortaleza de tu contraseña
+- Detectar y documentar redes con encriptación débil (WEP, WPS habilitado)
+- Simular ataques de deauthentication para testing de resiliencia
+- Capturar tráfico de redes abiertas o WEP para análisis</p>
+<p class="hw-req"><strong>Hardware:</strong> adaptador WiFi con modo monitor + inyección. Los más confiables: Alfa AWUS036ACH (rtl8812au), Alfa AWUS036ACM (mt7612u), TP-Link TL-WN722N v1 (ath9k_htc).</p>
+<p><strong>Importante:</strong> WEP está muerto — se rompe en minutos con suficientes IVs. WPA2 con contraseña fuerte y sin WPS es resistente a ataques prácticos. WPA3 es prácticamente inmune a ataques de diccionario offline.</p>
+<p class="legal-note"><strong>⚠️ Nota legal:</strong> usar estas herramientas en redes ajenas sin autorización explícita es delito en Costa Rica (Ley 9048, artículo 230). Uso legítimo: tu propia red, redes de laboratorio, con autorización escrita del propietario.</p>
+<p><strong>Puerto en DragonOS:</strong> disponible por defecto en el sistema<br />
+<strong>Web:</strong> <code>aircrack-ng.org</code></p>
+<hr />
+<h3 id="35-whad-client">3.5 WHAD-client</h3>
+<p><strong>¿Qué es?</strong> WHAD (Wireless HAcking Devices) es un framework Python presentado en DEF CON 32 (2024) que unifica la forma en que las herramientas de hacking inalámbrico interactúan con el hardware. La idea central: el hardware maneja las tareas de RF, la lógica vive en la computadora. Esto hace que cualquier herramienta WHAD funcione con cualquier hardware compatible — cambiás el dongle sin reescribir el código.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Sniffing, inyección y conexión a dispositivos <strong>Bluetooth Low Energy</strong> (BLE) — leer características GATT, escribir valores, suscribirse a notificaciones
+- Ataques BLE: MitM, hijacking de conexiones, fuzzing de perfiles GATT, spoofing de dispositivos
+- <strong>Zigbee (802.15.4)</strong>: sniffing, inyección, análisis de redes IoT domóticas
+- <strong>Enhanced ShockBurst</strong> (Logitech): interceptar teclados y ratones inalámbricos USB
+- Captura a PCAP con visualización en Wireshark en tiempo real
+- Scripting Python para automatizar análisis y exploits de dispositivos IoT</p>
+<p><strong>Hardware compatible:</strong> nRF52840 dongle (con firmware ButteRFly), Ubertooth One, HackRF, y otros dispositivos con firmware WHAD</p>
+<p><strong>Diferencia con Kismet/Sparrow:</strong> WHAD es activo e interactivo — no solo observa, puede conectarse, interactuar y atacar dispositivos BLE/Zigbee específicos. Es el Burp Suite del mundo inalámbrico IoT.</p>
+<p><strong>Contexto DragonOS:</strong> es una de las adiciones más recientes — fue presentado en DEF CON 32 en agosto 2024 y Cemaxecuter lo integró en DragonOS Noble relativamente rápido, lo que habla de su relevancia en el ecosistema.</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/</code> (activar venv antes de usar)<br />
+<strong>GitHub:</strong> <code>github.com/whad-team/whad-client</code><br />
+<strong>Documentación:</strong> <code>whad.readthedocs.io</code></p>
+<hr />
+<h2 id="4-satelites">4. Satélites</h2>
+<blockquote>
+<p><em>Recepción de satélites meteorológicos, satélites de órbita baja, GPS y satélites geoestacionarios. Algunos de los casos de uso más espectaculares del SDR — imágenes de satélite en tiempo real con hardware de menos de $30.</em></p>
+</blockquote>
+<h3 id="41-frontends-visualizacion-aplicable">4.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SatDump</strong></td>
+<td>Es en sí mismo el frontend principal — decodifica y renderiza imágenes de satélite</td>
+</tr>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Recepción del stream raw antes de pasar a SatDump (modo source)</td>
+</tr>
+<tr>
+<td><strong>GQRX</strong></td>
+<td>Monitoreo de señal durante el pase del satélite</td>
+</tr>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Seguimiento de satélites con corrección Doppler automática</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-satelites-meteorologicos-satdump-noaa-meteor">4.2 Satélites meteorológicos — SatDump / NOAA / METEOR</h3>
+<p><strong>¿Qué es?</strong> SatDump es el decodificador universal de datos satelitales — el proyecto que unificó lo que antes requerían 5 herramientas distintas. Procesa señales de más de 90 satélites diferentes, convierte la señal RF directamente en imágenes georeferenciadas, composites de color, datos científicos calibrados, y productos listos para uso meteorológico. Es activamente desarrollado (actualizaciones casi diarias) y es hoy el estándar de facto en la comunidad SDR para satélites.</p>
+<p><strong>¿Qué satélites podés recibir desde Costa Rica?</strong></p>
+<p><em>LEO meteorológicos en 137 MHz (pases de ~10 min, antena simple):</em>
+- <strong>NOAA-15, NOAA-18, NOAA-19</strong> — APT (analógico), imagen visible e infrarroja, ~4 km/píxel. Los más fáciles de recibir — señal fuerte, protocolo simple
+- <strong>Meteor-M N°2-3 y N°2-4</strong> (Rusia) — LRPT (digital), imagen en color visible e IR, ~1 km/píxel. Mejor resolución que NOAA pero señal más delicada</p>
+<p><em>Geoestacionarios en L-Band ~1.69 GHz (fijos en el cielo, antena apuntada):</em>
+- <strong>GOES-16</strong> (75.2°W) — cobertura perfecta de las Américas incluyendo Costa Rica. Transmite HRIT/EMWIN cada 10 minutos. Imágenes de disco completo en 16 bandas espectrales
+- <strong>GOES-18</strong> (137.2°W) — cubre el Pacífico Este, también visible desde CR
+- <strong>Metop-B y C</strong> (EUMETSAT) — polares europeos, pasan por CR, AHRPT a 1.7 GHz con imagen de alta resolución</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Recibir imágenes de satélite meteorológico en tiempo real con un RTL-SDR y antena de $10
+- Generar composites calibrados (temperatura superficial del mar, microfísica de nubes, vapor de agua)
+- Georeferenciar imágenes automáticamente sobre mapas — la imagen sale alineada al mundo real
+- Decodificar el sistema GOES DCS (40.000 plataformas de datos ambientales en las Américas — niveles de ríos, temperatura, precipitación)
+- Automatizar la recepción de pases con el scheduler integrado + control de rotador de antena
+- Exportar a PNG, GeoTIFF — compatible con QGIS, Google Earth, WRF numérico</p>
+<p><strong>Hardware para 137 MHz (NOAA/Meteor):</strong> RTL-SDR + antena V-dipole o QFH — la V-dipole se hace en 20 minutos con cable coaxial. Costo total del sistema: ~$25.<br />
+<strong>Hardware para 1.69 GHz (GOES/Metop):</strong> RTL-SDR + antena de parche L-Band + LNA (Nooelec SAWbird+ GOES). El GOES-16 desde Costa Rica está a ~45° de elevación al norte.</p>
+<p><strong>El caso más impactante para principiantes:</strong> en tu primer intento con una V-dipole casera y un RTL-SDR podés recibir una imagen de Costa Rica desde el espacio en menos de una hora de setup. Es probablemente el resultado más satisfactorio y visual de todo el ecosistema SDR.</p>
+<p><strong>Puerto en DragonOS:</strong> menú de aplicaciones<br />
+<strong>Web:</strong> <code>satdump.org</code> / GitHub: <code>github.com/SatDump/SatDump</code></p>
+<hr />
+<h3 id="43-gps-gnss-gnss-sdr">4.3 GPS / GNSS — GNSS-SDR</h3>
+<p><strong>¿Qué es?</strong> GNSS-SDR es un receptor GPS/GNSS implementado completamente en software sobre GNU Radio. En lugar de depender de un chip GPS dedicado, procesa las señales crudas de los satélites de navegación en software — adquisición, seguimiento de código y portadora, decodificación del mensaje de navegación, y cálculo de posición/velocidad/tiempo (PVT). Es una herramienta de investigación, no un reemplazo para el GPS de tu teléfono.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Entender cómo funciona GPS a nivel de señal — ver los PRN codes, el proceso de correlación, la decodificación del almanaque
+- Investigar vulnerabilidades de GPS: spoofing, jamming, meaconing — el SDR permite inyectar señales falsas en entorno controlado
+- Probar algoritmos de posicionamiento de alta precisión (RTK, PPP) en software
+- Recibir múltiples constelaciones simultáneamente: GPS L1/L2, GLONASS L1, Galileo E1/E5, BeiDou B1
+- Capturar y almacenar señales crudas para análisis posterior o replay</p>
+<p class="hw-req"><strong>Hardware:</strong> necesita una <strong>antena GPS activa</strong> (patch con amplificador interno, ~1575 MHz) + bias tee para alimentarla.
+- RTL-SDR v3 (tiene bias tee) — funciona para GPS L1, sensibilidad limitada
+- Airspy R2 o USRP — mejor rendimiento, más constelaciones simultáneas
+- HackRF — funciona pero no tiene LNA dedicado, peor SNR</p>
+<p><strong>La señal GPS es extremadamente débil:</strong> llega a ~-130 dBm — por debajo del nivel de ruido del receptor. Se extrae mediante correlación de pseudonoise (PRN) codes. Sin LNA de buena calidad, simplemente no se ve.</p>
+<p><strong>Diferencia con GPS-Simulator (sección 7.3):</strong> GNSS-SDR <em>recibe</em> señales reales de satélites GPS. GPS-Simulator <em>transmite</em> señales GPS falsas — son opuestos complementarios.</p>
+<p><strong>Casos de uso reales:</strong> investigación académica en spoofing/anti-spoofing, desarrollo de algoritmos de posicionamiento, calibración de receptores, educación en sistemas de navegación por satélite.</p>
+<p><strong>Puerto en DragonOS:</strong> disponible vía GNU Radio<br />
+<strong>Web:</strong> <code>gnss-sdr.org</code></p>
+<hr />
+<h3 id="44-gr-iridium-iridium-toolkit">4.4 GR-Iridium + Iridium-Toolkit</h3>
+<blockquote>
+<p><em>Ver descripción completa en sección <a href="#17-iridium--iridium-toolkit--gr-iridium">1.7 — Iridium</a>. En el contexto de satélites, aplica todo lo descrito ahí.</em></p>
+</blockquote>
+<p><strong>Resumen de contexto satelital:</strong> Iridium es la única constelación LEO de comunicaciones cubierta en DragonOS. La diferencia respecto a NOAA/METEOR/GOES es que no transmite imágenes — transmite comunicaciones (voz, datos, mensajes ACARS aeronáuticos, señales de emergencia EPIRB/PLB). Su decodificación es técnicamente más compleja y requiere mayor CPU que los satélites meteorológicos.</p>
+<p><strong>Hardware diferenciador:</strong> para satélites meteorológicos un RTL-SDR es suficiente. Para Iridium, el HackRF One es el hardware mínimo práctico — su ancho de banda de 20 MHz captura toda la banda Iridium de una sola vez, mientras el RTL-SDR solo captura 2.4 MHz de los 10 MHz totales.</p>
+<hr />
+<h2 id="5-trunking-y-radiocomunicaciones-terrestres">5. Trunking y radiocomunicaciones terrestres</h2>
+<blockquote>
+<p><em>Sistemas de radio usados por policía, bomberos, servicios de emergencia, transporte público. Muchos sistemas son digitales y encriptados, pero hay mucho que se puede monitorear legalmente.</em></p>
+</blockquote>
+<h3 id="51-frontends-visualizacion-aplicable">5.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SDRTrunk</strong></td>
+<td>Es en sí mismo un frontend especializado en trunking con waterfall propio</td>
+</tr>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Demoduladores P25, DMR, NXDN integrados</td>
+</tr>
+<tr>
+<td><strong>GQRX</strong></td>
+<td>Monitoreo de canales analógicos NFM individuales</td>
+</tr>
+<tr>
+<td><strong>OpenWebRX+</strong></td>
+<td>Acceso remoto a feeds de trunking</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-sdrtrunk">5.2 SDRTrunk</h3>
+<p><strong>¿Qué es?</strong> SDRTrunk es la aplicación de referencia para seguimiento y decodificación de sistemas de radio troncalizada (trunked radio) con SDR. El concepto de trunking: en lugar de asignar una frecuencia fija a cada grupo (bomberos, policía, ambulancias), un sistema troncalizado comparte un pool de frecuencias entre todos. Un <strong>canal de control</strong> asigna frecuencias a grupos bajo demanda. Para seguir una conversación hay que decodificar el canal de control y saltar a la frecuencia asignada — todo en tiempo real. SDRTrunk automatiza exactamente eso.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Seguir conversaciones en sistemas P25 Phase 1 y 2, DMR, NXDN, MPT1327 en tiempo real
+- Ver todos los talkgroups (grupos de conversación) activos y sus alias (si tenés la base de datos de RadioReference)
+- Grabar llamadas por talkgroup a archivos de audio individuales
+- Stream de audio a servidores remotos (Broadcastify, OpenMHz)
+- Monitorear múltiples sistemas simultáneamente con múltiples dongles
+- Ver mensajes de datos del canal de control: asignaciones de frecuencia, afiliaciones, ubicación GPS si el sistema la transmite</p>
+<p class="hw-min"><strong>Hardware mínimo:</strong> 1 RTL-SDR para sistemas convencionales (no trunked). Para trunking real <strong>se necesitan 2 RTL-SDRs</strong> — uno dedicado al canal de control, uno para voz. Con SDRs de mayor ancho de banda (SDRplay RSP1A, Airspy R2) un solo dispositivo puede cubrir todo el sistema si las frecuencias caben en el ancho de banda.</p>
+<p><strong>La barrera real no es hardware sino datos:</strong> necesitás conocer las frecuencias del canal de control y los IDs del sistema. En EE.UU. RadioReference tiene todo mapeado. En Costa Rica no existe esa base de datos pública — requiere trabajo de campo previo para identificar el sistema.</p>
+<p><strong>Protocolos:</strong> P25 Phase 1 (C4FM/FSK4), P25 Phase 2 (TDMA), DMR (Tier II/III), NXDN, LTR, Passport, MPT1327.</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/</code> — aplicación Java, requiere JVM<br />
+<strong>GitHub:</strong> <code>github.com/DSheirer/sdrtrunk</code></p>
+<hr />
+<h3 id="53-trunk-recorder">5.3 Trunk-Recorder</h3>
+<p><strong>¿Qué es?</strong> Trunk-Recorder es la versión headless (sin GUI) y orientada a producción de lo que SDRTrunk hace interactivamente. Está diseñado para correr 24/7 en un servidor o Raspberry Pi, grabar cada llamada de un sistema troncalizado, y subirla automáticamente a plataformas públicas como <strong>OpenMHz</strong> o <strong>Broadcastify</strong>. A diferencia de SDRTrunk que es para escucha interactiva, Trunk-Recorder es para archivar y publicar.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Grabar cada llamada por talkgroup en archivos MP3/WAV con timestamp, duración, y metadatos
+- Publicar automáticamente en OpenMHz (plataforma abierta) o Broadcastify (la más popular en EE.UU.)
+- Monitorear múltiples sistemas P25/DMR/SmartNet simultáneamente con múltiples SDRs
+- Configurar filtros por talkgroup — grabar solo ciertos grupos
+- Configurar alertas cuando un talkgroup específico se activa</p>
+<p><strong>Diferencia clave con SDRTrunk:</strong> Trunk-Recorder no tiene GUI — se configura con un archivo JSON y corre en terminal. Es más estable para operación continua, consume menos recursos, y tiene mejor integración con plataformas públicas. SDRTrunk es para escuchar en tiempo real; Trunk-Recorder es para archivar.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR funciona. Múltiples dongles para múltiples sistemas. Para P25 Phase 2 necesitás un SDR con al menos 1 MHz de ancho de banda simultáneo.</p>
+<p><strong>Caso de uso típico:</strong> estación en casa o servidor en nube que captura toda la actividad de una agencia de emergencias local y la publica en tiempo real para que cualquiera pueda escuchar. Legal en la mayoría de jurisdicciones para sistemas no encriptados.</p>
+<p><strong>GitHub:</strong> <code>github.com/TrunkRecorder/trunk-recorder</code><br />
+<strong>Web:</strong> <code>trunkrecorder.com</code></p>
+<hr />
+<h3 id="54-dsd-dsd-fme">5.4 DSD / DSD-FME</h3>
+<p><strong>¿Qué es?</strong> DSD (Digital Speech Decoder) es el decodificador de voz digital más portable — toma audio como entrada y lo decodifica. No sabe nada de SDR ni de trunking por sí solo: recibe audio ya demodulado (de GQRX, SDR++ o cualquier fuente) y extrae la voz. <code>DSD-FME</code> es el fork mejorado que agrega soporte de trunking avanzado, más protocolos, y interfaz ncurses interactiva.</p>
+<p><strong>¿Qué protocolos decodifica?</strong>
+- P25 Phase 1 (FDMA/C4FM)
+- DMR (Digital Mobile Radio) — el más usado en radios comerciales
+- NXDN — Kenwood NEXEDGE / Icom IDAS
+- D-STAR — radio digital de Icom
+- dPMR — versión europea de DMR</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Decodificar voz de cualquier radio digital que uses mientras se sintoniza en tiempo real
+- Modo trunking (DSD-FME): conectarse a un RTL-SDR directamente y seguir un sistema P25/DMR
+- Modo scanner: barrer un CSV de frecuencias buscando actividad digital
+- Ver metadatos de las transmisiones: talkgroup ID, radio ID, tipo de llamada, encriptación activa
+- Capturar audio decodificado a archivos WAV por llamada</p>
+<p><strong>La limitación de encriptación:</strong> si el sistema usa encriptación (AES, DES, RC4), DSD ve que hay tráfico y te indica el algoritmo, pero <strong>no puede decodificar el audio</strong> — escuchás ruido digital. Muchos sistemas de emergencias en EE.UU. ya migraron a encriptación total. En Costa Rica la situación varía.</p>
+<p><strong>Flujo típico:</strong> <code>RTL-SDR</code> → <code>GQRX</code> (demodulación NFM) → audio virtual (PulseAudio/pipe) → <code>dsd-fme</code> (decodificación P25/DMR)</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/dsd-fme/</code><br />
+<strong>GitHub:</strong> <code>github.com/lwvmobile/dsd-fme</code></p>
+<hr />
+<h3 id="55-op25">5.5 OP25</h3>
+<p><strong>¿Qué es?</strong> OP25 (Osmocom Project 25) es el decodificador P25 de referencia en Linux, basado en GNU Radio. A diferencia de SDRTrunk (que solo hace Phase 1 completo) o DSD (que hace Phase 1 básico), OP25 soporta <strong>P25 Phase 1 Y Phase 2</strong> completos incluyendo trunking avanzado. Es más difícil de configurar que SDRTrunk pero más potente para sistemas Phase 2, que es hacia donde está migrando la mayoría de agencias públicas.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Decodificar P25 Phase 1 y <strong>Phase 2</strong> (TDMA) — la diferencia crítica con otras herramientas
+- Trunking completo con seguimiento de canal de control y salto automático a voz
+- Transmisión P25 (con hardware TX apropiado) — HackRF, USRP
+- Multi-receptor: múltiples dongles para cubrir más ancho de banda simultáneo
+- Plots de constelación y símbolo para diagnóstico de calidad de señal</p>
+<p><strong>La diferencia Phase 1 vs Phase 2:</strong> Phase 2 usa TDMA (dos conversaciones en el mismo canal) y modulación QPSK en lugar de FDMA/C4FM de Phase 1. Los decodificadores de Phase 1 simplemente no funcionan con Phase 2 — se necesita OP25 o SDRTrunk actualizado.</p>
+<p><strong>La curva de aprendizaje:</strong> OP25 no tiene una GUI amigable — se configura con archivos <code>.tsv</code> y se lanza desde terminal. El fork <strong>Boatbod</strong> es el más activo y el recomendado. Trunk-Recorder usa las librerías de OP25 internamente.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR básico. Para Phase 2 con múltiples talkgroups simultáneos se recomienda SDR con mayor ancho de banda (SDRplay, Airspy).</p>
+<p><strong>GitHub:</strong> <code>github.com/boatbod/op25</code></p>
+<hr />
+<h3 id="56-qradiolink">5.6 QRadioLink</h3>
+<p><strong>¿Qué es?</strong> QRadioLink es diferente a todas las herramientas anteriores de esta sección — es un <strong>transceptor SDR completo</strong> (RX + TX) orientado a radio amateur digital, no un decodificador de sistemas comerciales. Construido sobre GNU Radio con interfaz Qt5, permite transmitir y recibir modos digitales de voz: DMR, YSF (Yaesu System Fusion), D-STAR, M17, Codec2. Incluye integración VoIP via Mumble y puede operar como repetidor o nodo de red de radio amateur.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Transmitir y recibir voz en DMR, D-STAR, YSF, M17, FM analógico con un SDR full-duplex
+- Operar como repetidor/hotspot DMR usando LimeSDR o USRP — sin hardware MMDVM dedicado
+- Hasta 7 portadoras simultáneas en 200 kHz de ancho de banda (multicarrier)
+- Conectar a redes DMR globales (BrandMeister, DMR-MARC) via internet
+- Linking de nodos radio vía VoIP/Mumble — unir repetidores de distintos lugares
+- Experimentar con el protocolo M17 — el sucesor open source de D-STAR</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR (solo RX). Para TX: <strong>LimeSDR-mini, LimeNET-Micro, USRP, BladeRF, ADALM-Pluto</strong> — full-duplex obligatorio.</p>
+<p><strong>Diferencia con las otras herramientas de esta sección:</strong> SDRTrunk/Trunk-Recorder/DSD/OP25 son herramientas de <strong>monitoreo pasivo</strong> de sistemas existentes. QRadioLink es para <strong>participar activamente</strong> en comunicaciones de radio amateur con SDR.</p>
+<p><strong>Contexto:</strong> si sos radioaficionado con licencia y tenés LimeSDR, QRadioLink convierte tu PC en una estación base DMR capaz de cubrir zonas sin repetidor, experimentar con nuevos protocolos, o enlazar repetidores remotamente.</p>
+<p><strong>Web:</strong> <code>qradiolink.org</code> / GitHub: <code>github.com/qradiolink/qradiolink</code></p>
+<hr />
+<h2 id="6-analisis-de-senales-digitales">6. Análisis de señales digitales</h2>
+<blockquote>
+<p><em>Herramientas para identificar señales desconocidas, hacer ingeniería inversa de protocolos, analizar modulaciones, y extraer datos de transmisiones capturadas. El lado "forense" del SDR.</em></p>
+</blockquote>
+<h3 id="61-frontends-visualizacion-aplicable">6.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Inspectrum</strong></td>
+<td>Frontend de análisis visual de capturas IQ — el osciloscopio del SDR</td>
+</tr>
+<tr>
+<td><strong>SigDigger</strong></td>
+<td>Frontend con demodulación manual configurable y análisis espectral</td>
+</tr>
+<tr>
+<td><strong>GQRX</strong></td>
+<td>Captura de señales a archivo IQ para análisis posterior</td>
+</tr>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Grabación de IQ para análisis offline</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-universal-radio-hacker-urh">6.2 Universal Radio Hacker (URH)</h3>
+<p><strong>¿Qué es?</strong> URH es la navaja suiza del análisis y reverse engineering de protocolos inalámbricos propietarios. Si capturás una señal de un control remoto, un sensor de alarma, un termóstato WiFi, un medidor inteligente, un portón eléctrico, o cualquier dispositivo IoT que transmite en RF — URH es la herramienta para descifrar qué dice. Combina captura, demodulación automática, análisis de protocolo, y generación/transmisión de señales en una sola GUI. Fue presentado en USENIX WOOT 2018 y desde entonces es referencia en seguridad RF.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- <strong>Capturar</strong> señales directamente desde el SDR dentro de la propia aplicación
+- <strong>Demodulación automática</strong>: detecta el tipo de modulación (ASK/OOK, FSK, PSK) y los parámetros (bit rate, frecuencia de desviación) sin que vos sepas nada del protocolo
+- <strong>Análisis de protocolo</strong>: identifica campos repetidos, preámbulos, checksums, y estructura de mensajes automáticamente o manualmente
+- <strong>Decodificación personalizada</strong>: NRZ, Manchester, PWM, DC-free, whitening CC1101 — los encodings más usados en IoT
+- <strong>Fuzzing</strong>: generar variaciones de mensajes para testear robustez de dispositivos
+- <strong>Simulación y transmisión</strong>: una vez entendido el protocolo, transmitir mensajes propios con HackRF
+- <strong>Ataques de replay</strong>: capturar el mensaje de apertura de un portón y retransmitirlo</p>
+<p><strong>Casos de uso reales:</strong> abrir un portón de cochera vecino (demo educativa), clonar una llave remota de auto (frecuencias 315/433 MHz), analizar el protocolo de sensores de temperatura inalámbricos, vulnerabilidades en sistemas de alarma RF.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR para captura. <strong>HackRF One</strong> para el ciclo completo captura+transmisión (replay attacks, fuzzing en vivo).</p>
+<p><strong>Frecuencias ISM típicas de IoT:</strong> 315 MHz (EE.UU.), 433.92 MHz (Europa/CR), 868 MHz (Europa), 915 MHz (EE.UU.), 2.4 GHz (ZigBee, BLE, WiFi)</p>
+<p><strong>Puerto en DragonOS:</strong> disponible en menú<br />
+<strong>GitHub:</strong> <code>github.com/jopohl/urh</code></p>
+<hr />
+<h3 id="63-inspectrum">6.3 Inspectrum</h3>
+<p><strong>¿Qué es?</strong> Inspectrum es el "osciloscopio" del SDR — una herramienta de análisis visual de archivos IQ capturados. No hace decodificación automática ni análisis de protocolo: te muestra la señal de la forma más cruda y precisa posible para que vos la analices. Trabaja offline con archivos de captura (<code>.cfile</code>, <code>.cf32</code>, <code>.cs8</code>, etc.), soporta archivos de más de 100 GB sin problema, y tiene herramientas de medición precisas para extraer parámetros de la señal.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Ver el espectrograma de una señal capturada con zoom y pan infinito — ideal para señales cortas y ráfagas (bursts)
+- Graficar amplitud, frecuencia, fase y muestras IQ en el tiempo
+- Medir el period y symbol rate exactos con cursores interactivos
+- Extraer símbolos de la señal visualmente — definís los umbrales de decisión a mano
+- Exportar segmentos de tiempo, muestras filtradas, y datos demodulados
+- Identificar modulación desconocida observando el patrón visual de la señal</p>
+<p><strong>Diferencia con URH:</strong> Inspectrum es más preciso y visual para análisis fino de señales individuales, pero no tiene la suite completa de análisis de protocolo que URH incluye. Son complementarios: Inspectrum para entender la señal a fondo, URH para descifrar el protocolo. Inspectrum también soporta archivos mucho más grandes y consume menos recursos.</p>
+<p><strong>El flujo típico:</strong>
+1. Capturás con GQRX o SDR++ → archivo IQ
+2. Inspectrum para ver visualmente la señal, medir bit rate, identificar modulación
+3. URH para hacer el análisis del protocolo en capas más altas</p>
+<p><strong>Puerto en DragonOS:</strong> disponible en menú / <code>inspectrum</code> en terminal<br />
+<strong>GitHub:</strong> <code>github.com/miek/inspectrum</code></p>
+<hr />
+<h3 id="64-sigdigger">6.4 SigDigger</h3>
+<p><strong>¿Qué es?</strong> SigDigger es un analizador de señales digitales que ocupa el espacio entre GQRX (frontend general) y las herramientas especializadas como URH. Es más avanzado que GQRX para análisis técnico de señales pero más accesible que GNU Radio para tareas rápidas. Clave: <strong>no está basado en GNU Radio</strong> — usa su propia librería DSP (sigutils/Suscan) optimizada para multi-core. Desarrollado por BatchDrake (Gonzalo Carracedo), investigador español de seguridad RF.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Análisis de señales en tiempo real Y replay desde archivos IQ
+- <strong>Estimación ciega de parámetros</strong>: detecta automáticamente modulación, symbol rate, y otros parámetros de señales desconocidas sin que vos los conozcas de antemano
+- Demodulación configurable de FSK, PSK, ASK con visualización de constelación
+- Inspección de bursts individuales con detección automática de inicio/fin
+- Grabación de banda base (baseband) — captura todo el ancho de banda a archivo
+- <strong>Panoramic spectrum</strong>: navegar por el espectro histórico como si fuera una línea de tiempo
+- Análisis Doppler y de transición para señales en movimiento
+- Demodulación de TV analógica (prueba de concepto histórica interesante)
+- Stream de datos demodulados via red — alimentar otras herramientas</p>
+<p><strong>Diferencia clave con GQRX:</strong> SigDigger está orientado a análisis técnico profundo, no a escuchar. No vas a SigDigger para oír una emisora — vas cuando necesitás entender una señal desconocida a nivel técnico.</p>
+<p><strong>Puerto en DragonOS:</strong> disponible en menú (con actualización via <code>/usr/src/blsd</code>)<br />
+<strong>GitHub:</strong> <code>github.com/BatchDrake/SigDigger</code></p>
+<hr />
+<h3 id="65-gnu-radio">6.5 GNU Radio</h3>
+<p><strong>¿Qué es?</strong> GNU Radio es el <strong>framework</strong> que hace posible casi todo el ecosistema SDR en DragonOS. No es una herramienta para un caso de uso específico — es el motor de procesamiento de señales sobre el que se construyen cientos de aplicaciones. Si SDRTrunk, SatDump, gr-gsm, OP25, QRadioLink, GNSS-SDR, y docenas de otras herramientas existen, es porque GNU Radio les da la infraestructura.</p>
+<p><strong>¿Qué es en términos técnicos?</strong> Un toolkit de procesamiento de señales digitales (DSP) que opera con el modelo de <strong>flowgraph</strong>: un grafo dirigido donde cada nodo es un bloque de procesamiento (filtro, demodulador, decoder, fuente de hardware, sink de audio) y las flechas son flujos de datos IQ. GNU Radio Companion (GRC) es el editor visual de flowgraphs — arrastrás bloques y los conectás como si armaras un circuito.</p>
+<p><strong>¿Qué podés hacer directamente con él?</strong>
+- Construir receptores y transmisores completamente customizados desde cero
+- Prototipado rápido de algoritmos de comunicación (nuevas modulaciones, nuevos protocolos)
+- Procesar señales capturadas offline con cadenas de procesamiento arbitrarias
+- Crear bloques propios en Python o C++ e integrarlos al ecosistema
+- Visualizar señales con sinks: waterfall, FFT, constelación, osciloscopio, histograma</p>
+<p><strong>La curva de aprendizaje:</strong> GNU Radio no es una herramienta que se usa casualmente. Requiere entender DSP (filtros, muestreo, modulaciones) y tiene una curva inicial empinada. Pero dominar GNU Radio es dominar el SDR a nivel fundamental — todo lo demás son abstracciones sobre él.</p>
+<p><strong>Versión en DragonOS:</strong> GNU Radio 3.10 en DragonOS Noble. Muchos módulos out-of-tree (OOT) instalados: gr-gsm, gr-iridium, gr-osmosdr, gr-lora, gr-limesdr, entre otros.</p>
+<p><strong>Web:</strong> <code>gnuradio.org</code></p>
+<hr />
+<h3 id="66-signal-server">6.6 Signal Server</h3>
+<p><strong>¿Qué es?</strong> Signal Server es una herramienta de modelado de propagación de RF basada en datos topográficos. No analiza señales reales — <strong>predice</strong> cómo se va a propagar una señal de radio en el espacio geográfico dado el terreno, la frecuencia, la potencia del transmisor y la altura de las antenas. Genera mapas de cobertura sobre cartografía real. Es la misma tecnología que usan operadores de telecomunicaciones para planificar la ubicación de antenas.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Generar mapas de cobertura de RF para cualquier frecuencia y ubicación
+- Predecir qué áreas van a recibir señal de un transmisor en una ubicación dada
+- Planificar ubicaciones óptimas para antenas (repetidores, nodos Meshtastic, APRS, etc.)
+- Modelar zonas de sombra de RF en terreno montañoso
+- Calcular enlace punto a punto entre dos ubicaciones</p>
+<p><strong>Modelos de propagación incluidos:</strong> ITM (Longley-Rice), ITWOM v3, EPE, Irregular Terrain — cada uno adecuado para distintos rangos de frecuencia y tipo de terreno.</p>
+<p><strong>Caso de uso práctico para vos:</strong> planificar dónde poner un nodo Meshtastic/LoRa en Guanacaste para maximizar cobertura desde tu propiedad, o calcular si hay enlace visual de RF entre Atenas y tu propiedad en Guanacaste para un radioenlace VHF.</p>
+<p><strong>En DragonOS incluye:</strong>
+- Signal Server (el motor de cálculo, CLI)
+- Signal Server GUI (interfaz gráfica con Python3 venv)
+- Signal Server N90ZB (versión con interfaz web, mantenida por Dr. Bill Walker)</p>
+<p><strong>Datos topográficos:</strong> usa datos SRTM (NASA Shuttle Radar Topography Mission) que cubren la práctica totalidad de la Tierra incluyendo Costa Rica. Descargables gratis de USGS.</p>
+<p><strong>Puerto en DragonOS:</strong> Signal Server GUI en menú / Signal Server CLI en <code>/usr/src/</code></p>
+<hr />
+<h2 id="7-transmision-y-herramientas-ofensivas">7. Transmisión y herramientas ofensivas</h2>
+<blockquote>
+<p><em>Herramientas que permiten transmitir señales, simular dispositivos, o realizar pruebas de seguridad RF. Requieren licencia de radioaficionado o entorno controlado. Hardware mínimo: HackRF One.</em></p>
+</blockquote>
+<h3 id="71-frontends-visualizacion-aplicable">7.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Transmisión de señales moduladas con visualización en tiempo real</td>
+</tr>
+<tr>
+<td><strong>GNU Radio Companion</strong></td>
+<td>Diseño visual de flujos de transmisión personalizados</td>
+</tr>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Verificación de lo transmitido (con segundo hardware en RX)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-hacktv">7.2 HackTV</h3>
+<p><strong>¿Qué es?</strong> HackTV convierte un HackRF en un transmisor de televisión analógica completo. Genera señales PAL, NTSC, SECAM y otros estándares históricos a partir de cualquier archivo de video compatible con ffmpeg (incluyendo streams de red). Es la herramienta que resucita televisores vintage, que fue usada en demostraciones en CTF competitions, y que permitió a Cemaxecuter transmitir video NTSC desde un dron en el contexto del DragonDrone.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Transmitir cualquier video a un televisor analógico en PAL (Europa/CR) o NTSC (EE.UU.)
+- Soporta estándares históricos: 819 líneas (Francia 1948), 405 líneas (UK 1936), 240 y 30 líneas (TV experimental de los años 30), y el formato de video de las misiones Apollo de la NASA
+- Teletext: transmitir páginas de teletext embebidas en la señal PAL
+- Audio NICAM estéreo digital
+- Videocrypt I/II/S: el sistema de encriptación de Sky TV en los años 90 — investigación histórica de seguridad
+- Transmitir la pantalla de tu PC en tiempo real (<code>ffmpeg::0</code> como fuente)
+- Generar archivos IQ de señal TV para análisis posterior</p>
+<p class="hw-req"><strong>Hardware:</strong> HackRF One obligatorio (necesita TX). El RTL-SDR no sirve — es solo RX.<br />
+<strong>Antena:</strong> para transmisión TV UHF (~470–862 MHz en PAL) se usa cualquier dipole o antena UHF.</p>
+<p><strong>Caso de uso práctico:</strong> dar vida a un televisor Sony Trinitron de los años 80 o un Betamax conectado a un viejo TV. También usado en drones para transmisión FPV analógica NTSC sobre frecuencias no licenciadas (con potencia muy baja).</p>
+<p><strong>Nota técnica importante:</strong> HackRF está limitado a 20 MHz de ancho de banda — para transmisión satelital analógica de alta fidelidad (ASTRA FM, 26 MHz) se necesita LimeSDR. Para TV terrestre estándar el HackRF es suficiente.</p>
+<p><strong>Codeberg:</strong> <code>codeberg.org/fsphil/hacktv</code> (repositorio activo, GitHub archivado)</p>
+<hr />
+<h3 id="73-gps-simulator-gps-sdr-sim">7.3 GPS-Simulator (gps-sdr-sim)</h3>
+<p><strong>¿Qué es?</strong> <code>gps-sdr-sim</code> genera un stream de datos IQ que simula las señales de la constelación GPS en L1 (1575.42 MHz) para una ubicación geográfica arbitraria. Este stream se transmite con <code>hackrf_transfer</code> y cualquier receptor GPS cercano que reciba la señal (no solo el GPS objetivo — todos los que estén dentro del alcance) interpretará estar en la ubicación ficticia. Es la herramienta de investigación en GPS spoofing más usada en el mundo académico y de seguridad.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Generar una señal GPS falsa para una coordenada estática cualquier lugar del mundo
+- Generar rutas dinámicas (archivos NMEA o ECEF) — el receptor GPS "se mueve" siguiendo la ruta
+- Testear firmware de drones, aplicaciones de navegación, y sistemas que dependen de GPS en entorno controlado
+- Investigar vulnerabilidades de sistemas GPS: drones, vehículos autónomos, timing de infraestructura
+- Reproducir ataques históricos: el autopilot de Tesla redirigido, cheating en Pokémon Go, spoofing de yates en el Mar Negro</p>
+<p><strong>Cómo funciona:</strong>
+1. Descargás el archivo de efemérides GNSS del día (NASA CDDIS — gratis)
+2. <code>gps-sdr-sim -e brdc0220.25n -l 9.934739,-84.087502,1200</code> (coordenadas de San José, CR)
+3. Genera <code>gpssim.bin</code> (~1.5 GB por minuto de simulación)
+4. <code>hackrf_transfer -t gpssim.bin -f 1575420000 -s 2600000 -a 1 -x 0</code></p>
+<p class="hw-req"><strong>Hardware:</strong> HackRF One obligatorio para transmisión. Se recomienda atenuador de 50-60 dB entre HackRF y el receptor GPS bajo prueba — la señal es extremadamente fuerte comparada con la real.</p>
+<p class="legal-note"><strong>⚠️ Nota legal crítica:</strong> transmitir señales GPS falsas es ilegal en prácticamente todas las jurisdicciones — incluyendo Costa Rica (SUTEL, Ley 8642). Uso legítimo exclusivamente en: jaula de Faraday, laboratorio apantallado, o con autorización explícita de la autoridad regulatoria. La misma tecnología es usada por Rusia para proteger instalaciones sensibles y por fuerzas militares para proteger VIPs de drones.</p>
+<p><strong>GitHub:</strong> <code>github.com/osqzss/gps-sdr-sim</code></p>
+<hr />
+<h3 id="74-hackrf_transfer-hackrf_sweep">7.4 hackrf_transfer / hackrf_sweep</h3>
+<p><strong>¿Qué son?</strong> Son las herramientas de línea de comando fundamentales del HackRF One — las que vienen con el firmware oficial de Great Scott Gadgets. Todo lo demás (HackTV, GPS-sim, URH, etc.) se construye sobre estas primitivas o las usa internamente.</p>
+<p><strong>hackrf_transfer:</strong>
+- Transmite cualquier archivo IQ raw a cualquier frecuencia: <code>hackrf_transfer -t signal.bin -f 433920000 -s 2000000</code>
+- Recibe y guarda a archivo IQ raw: <code>hackrf_transfer -r capture.bin -f 915000000 -s 2000000</code>
+- Parámetros: frecuencia (<code>-f</code>), sample rate (<code>-s</code>), ganancia TX VGA (<code>-x</code>), amplificador RF (<code>-a</code>), ganancia RX LNA (<code>-l</code>), ganancia RX VGA (<code>-g</code>)
+- Es la "cañería" de datos del HackRF — nada más, nada menos</p>
+<p><strong>hackrf_sweep:</strong>
+- Barre el espectro de frecuencias a alta velocidad — mucho más rápido que un SDR normal
+- Puede escanear decenas de GHz en segundos: <code>hackrf_sweep -f 88:108 -N 1 -B</code> (FM broadcast)
+- Exporta a CSV para graficar con gnuplot, Python, o herramientas de análisis
+- Usado en Sparrow-WiFi para el overlay de espectro de 2.4/5 GHz
+- Útil para detección de interferencia, mapeo de espectro, y auditoría de ocupación de bandas</p>
+<p><strong>Herramientas adicionales del paquete hackrf:</strong>
+- <code>hackrf_info</code> — info del dispositivo conectado
+- <code>hackrf_spiflash</code> — flashea el firmware del HackRF
+- <code>hackrf_debug</code> — debug de hardware</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/bin/</code> (instalados globalmente)</p>
+<hr />
+<h3 id="75-portapack-mayhem">7.5 Portapack Mayhem</h3>
+<p><strong>¿Qué es?</strong> PortaPack es un módulo que se conecta al HackRF One y le agrega: pantalla LCD a color, tarjeta SD, batería integrada, y botones de navegación — convirtiéndolo en un dispositivo standalone completamente portátil sin necesidad de PC. Mayhem es el firmware comunitario (fork del original Havoc) con más de 100 aplicaciones, actualizaciones nightly, y es el estándar de facto para el PortaPack. DragonOS incluye los archivos de firmware de Mayhem en <code>/usr/src/firmware/mayhem/</code>.</p>
+<p><strong>Variantes de hardware:</strong>
+- H1 — original, básico
+- H2 / H2+ — más común, con batería integrada
+- H4M — el más nuevo (2024), pantalla más grande, micrófono integrado, todo en un solo caso</p>
+<p><strong>¿Qué podés hacer con Mayhem?</strong></p>
+<p><em>Recepción y análisis:</em>
+- Spectrum analyzer, waterfall display
+- ADS-B — mapa de aviones en pantalla
+- ACARS, POCSAG, TPMS (presión de neumáticos), AIS (barcos)
+- FM/AM/SSB receiver
+- Bluetooth sniffer básico
+- Sondas de radio — detección de radiosondas meteorológicas</p>
+<p><em>Transmisión y replay:</em>
+- Signal replay: capturás cualquier señal a la SD y la retransmitís
+- Flipper TX: transmite archivos <code>.sub</code> del Flipper Zero directamente
+- Key fob tools: captura y replay de mandos de garaje, controles remoto, etc.
+- GPS spoofer integrado
+- FM transmitter</p>
+<p><em>Utilidades:</em>
+- File manager en pantalla
+- MayhemHub: interfaz web cuando está conectado a PC por USB
+- Scripting (.ppsc scripts)
+- Actualización de firmware over-the-air desde la web</p>
+<p><strong>La comparación con Flipper Zero:</strong> Mayhem+PortaPack cubre frecuencias de 1 MHz a 6 GHz (vs Flipper que solo llega a ~1 GHz) con mayor potencia y capacidad analítica. Flipper es más fácil de usar y más portátil; PortaPack H4M es más potente y capaz pero más grande y costoso (~$300-400 el combo).</p>
+<p><strong>Puerto en DragonOS:</strong> <code>/usr/src/firmware/mayhem/</code> (archivos .bin para flashear)<br />
+<strong>GitHub:</strong> <code>github.com/portapack-mayhem/mayhem-firmware</code></p>
+<hr />
+<h2 id="8-decodificadores-miscelaneos">8. Decodificadores misceláneos</h2>
+<blockquote>
+<p><em>Protocolos específicos con decodificadores dedicados. Cada uno resuelve un problema concreto: ubicación de barcos, mensajes de buscapersonas, imágenes por radio, telemetría de globos meteorológicos.</em></p>
+</blockquote>
+<h3 id="81-frontends-visualizacion-aplicable">8.1 Frontends / visualización aplicable</h3>
+<table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Rol en esta categoría</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GQRX</strong></td>
+<td>Recepción base para la mayoría de estos protocolos en VHF/UHF</td>
+</tr>
+<tr>
+<td><strong>SDR++</strong></td>
+<td>Plugins integrados para AIS, POCSAG, APRS</td>
+</tr>
+<tr>
+<td><strong>SDRAngel</strong></td>
+<td>Demoduladores para múltiples protocolos misceláneos</td>
+</tr>
+<tr>
+<td><strong>OpenWebRX+</strong></td>
+<td>Decodificación web de FT8, WSPR, APRS, AIS, POCSAG entre otros</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-aprs-direwolf-multimon-ng">8.2 APRS — Direwolf / multimon-ng</h3>
+<p><strong>¿Qué es?</strong> APRS (Automatic Packet Reporting System) es una red de telemetría y mensajería en tiempo real sobre radio AX.25 VHF. Los nodos transmiten paquetes que contienen posición GPS, mensajes de texto, telemetría de sensores, datos meteorológicos, y alertas de emergencia. La red es global y descentralizada — cualquier radio con APRS puede comunicarse con el sistema completo. Se ve en <code>aprs.fi</code>.</p>
+<p><strong>Direwolf</strong> es el TNC (Terminal Node Controller) por software de referencia — reemplaza el hardware TNC dedicado usando la placa de sonido de la PC. Con un RTL-SDR como fuente de audio puede funcionar completamente en modo recepción.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- <strong>IGate (pasarela internet):</strong> recibir paquetes APRS de radio local y subirlos a la red APRS-IS (aprs.fi) — contribuís a la cobertura global
+- <strong>Digipeater:</strong> retransmitir paquetes para extender alcance — útil en áreas con poca infraestructura
+- <strong>Tracker:</strong> si tenés licencia y un radio TX, transmitir tu posición GPS en tiempo real
+- <strong>Monitoreo:</strong> ver actividad de estaciones locales, objetos meteorológicos, vehículos de emergencia que usen APRS
+- Integración con aplicaciones externas via KISS o AGWPE (Xastir, APRSIS32, etc.)</p>
+<p><strong>multimon-ng</strong> es el decodificador multiprotocolo más básico — toma audio y decodifica APRS/AFSK1200 entre muchos otros protocolos (POCSAG, FLEX, EAS, DTMF). Más simple que Direwolf pero sin capacidad de transmisión ni TNC completo.</p>
+<p><strong>Flujo SDR:</strong> <code>RTL-SDR</code> → <code>rtl_fm -f 144.390M -s 22050</code> → pipe de audio → <code>direwolf</code> (decodificación en tiempo real)</p>
+<p class="freq-cr"><strong>Frecuencia en Costa Rica:</strong> 144.390 MHz (IARU Región 2 — Américas). La actividad en CR es limitada pero existe, especialmente durante emergencias y eventos de la Sección Costa Rica del ARRL.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR + antena VHF. Para IGate completo 24/7: Raspberry Pi + RTL-SDR.</p>
+<p><strong>GitHub Direwolf:</strong> <code>github.com/wb2osz/direwolf</code><br />
+<strong>multimon-ng:</strong> disponible en paquetes Debian</p>
+<hr />
+<h3 id="83-ais-barcos">8.3 AIS — barcos</h3>
+<p><strong>¿Qué es?</strong> AIS (Automatic Identification System) es el equivalente marino de ADS-B. Todo barco comercial de más de 300 toneladas bruta está obligado por SOLAS (IMO) a transmitir continuamente su identidad MMSI, nombre, posición GPS, velocidad, rumbo, tipo de carga, y destino. Transmite en dos canales VHF marítimos simultáneamente usando modulación GMSK.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Ver en tiempo real todos los barcos comerciales en el Océano Pacífico y Mar Caribe cercanos a Costa Rica
+- Obtener identidad, destino, tipo de barco y ETA de cualquier vessel en rango
+- Alimentar plataformas como MarineTraffic o VesselFinder con datos propios
+- Detectar barcos que desactivan AIS deliberadamente (actividad sospechosa)
+- Monitorear tráfico en el Canal de Panamá desde tierra costarricense (con buena antena y elevación)</p>
+<p><strong>Frecuencias:</strong> 161.975 MHz (Canal 87B) y 162.025 MHz (Canal 88B) — ambos simultáneos.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR + antena VHF omnidireccional. Desde Guanacaste con antena en altura, podés recibir barcos a 50-70 km mar adentro.</p>
+<p><strong>Decodificadores en DragonOS:</strong>
+- OpenWebRX+ — AIS integrado, mapa en browser
+- SDR++ — plugin AIS nativo
+- <code>rtl-ais</code> — decodificador CLI específico para AIS
+- <code>multimon-ng</code> — también decodifica AIS básico</p>
+<p><strong>Dato:</strong> AIS Clase B (barcos pequeños, yates) también existe pero es opcional. Ferries y transbordadores costarricenses deberían transmitir AIS Clase A.</p>
+<hr />
+<h3 id="84-pocsag-flex-mensajeria-de-buscapersonas">8.4 POCSAG / FLEX — mensajería de buscapersonas</h3>
+<p><strong>¿Qué es?</strong> POCSAG (Post Office Code Standardisation Advisory Group) y FLEX (Motorola) son los protocolos de mensajería digital unidireccional usados en buscapersonas (pagers). A pesar de que los pagers parecen tecnología del siglo pasado, siguen activos en hospitales, servicios de emergencias, y utilities — principalmente porque son más confiables que los celulares en escenarios de desastre y tienen mayor penetración en edificios.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Recibir mensajes de texto transmitidos a buscapersonas en el rango de frecuencias local
+- En contextos hospitalarios: mensajes de nurse call, alertas de código, llamados de guardia
+- En emergencias: mensajes de coordinación de Cruz Roja, bomberos, servicios de salud
+- Análisis de protocolos: cómo funciona un sistema de paging, estructura de mensajes POCSAG</p>
+<p><strong>Frecuencias:</strong> variable por país y operador, generalmente 152–158 MHz (América), también 929/931 MHz en EE.UU. En CR dependé de los sistemas activos locales — requiere barrido previo.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR + antena VHF/UHF según la frecuencia local.</p>
+<p><strong>Decodificador:</strong> <code>multimon-ng</code> es el estándar en Linux:</p>
+<pre><code class="language-bash">rtl_fm -f 152.230M -s 22050 | multimon-ng -t raw -a POCSAG512 -a POCSAG1200 -a FLEX -
+</code></pre>
+<p><strong>Nota ética:</strong> los mensajes de pager viajan sin encriptación. En muchos países recibir es legal (recepción pasiva), pero usar o publicar el contenido de mensajes ajenos puede violar leyes de privacidad. En hospitales especialmente el contenido puede ser sensible (datos de pacientes). Actividad de investigación y monitoreo propio.</p>
+<hr />
+<h3 id="85-sstv-imagenes-por-radio">8.5 SSTV — imágenes por radio</h3>
+<p><strong>¿Qué es?</strong> SSTV (Slow Scan Television) es un método para transmitir imágenes estáticas por radio. Es extremadamente lento comparado con TV digital — una imagen tarda entre 8 y 138 segundos en transmitirse, dependiendo del modo. Se usa principalmente en radio amateur HF y VHF como actividad recreativa, y la ISS (Estación Espacial Internacional) transmite SSTV periódicamente como actividad educativa en 145.800 MHz.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Recibir imágenes transmitidas por radioaficionados en HF (14.230 MHz, 21.340 MHz)
+- Capturar las transmisiones SSTV de la ISS cuando pasa sobre Costa Rica (~cada 90 min)
+- Enviar imágenes propias si tenés licencia y radio TX (con software como QSSTV)</p>
+<p><strong>Modos más comunes:</strong> Martin M1 (alta calidad, 114s), Scottie S1 (alta calidad, 110s), Robot 36 (color rápido, 36s), PD180 (alta resolución, 187s)</p>
+<p><strong>Flujo SDR:</strong> RTL-SDR (modo direct sampling para HF, o antena VHF para ISS) → GQRX/SDR++ → audio USB demodulado → QSSTV (Linux) para decodificación y visualización de imagen.</p>
+<p><strong>La ISS y SSTV:</strong> cada pocos meses la ISS activa SSTV durante 1-2 días. Podés recibirla desde cualquier lugar con vista al cielo con un RTL-SDR y una antena VHF simple. El timing se publica en amsat.org. Desde Atenas la ISS pasa con buena elevación varias veces al día.</p>
+<p><strong>Decodificador en DragonOS:</strong> QSSTV (menú de aplicaciones)</p>
+<hr />
+<h3 id="86-radiosondas-globos-meteorologicos">8.6 Radiosondas — globos meteorológicos</h3>
+<p><strong>¿Qué es?</strong> Las radiosondas son pequeños paquetes de sensores que los servicios meteorológicos atan a globos de helio y lanzan dos veces al día (00 UTC y 12 UTC) para medir el perfil atmosférico vertical: temperatura, humedad, presión, viento y posición GPS en tiempo real hasta ~35 km de altitud. Transmiten en la banda meteorológica 400-406 MHz y se descartan después del vuelo — solo una fracción es recuperada.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Recibir datos meteorológicos en tiempo real de globos lanzados por el IMN u otros servicios
+- Ver la trayectoria en tiempo real y predecir dónde va a caer el globo (para caza)
+- Contribuir datos a la red global sondehub.org
+- Recuperar la radiosonda caída — contiene electrónica interesante (GPS Ublox, MCU STM32)</p>
+<p><strong>Lanzamientos relevantes para CR:</strong>
+- IMN lanza desde Aeropuerto Juan Santamaría (~2 por día)
+- También podés recibir sondas de Colombia, Panamá, o incluso Cuba en condiciones favorables de propagación</p>
+<p><strong>Tipos de sonda más comunes:</strong>
+- RS41 (Vaisala) — el más común globalmente, protocolos bien documentados
+- M10/M20 (Meteomodem) — usados en Francia y algunas estaciones americanas
+- DFM09/DFM17 (GRAW) — más raro</p>
+<p><strong><code>radiosonde_auto_rx</code>:</strong> el sistema automático completo — escanea 400-406 MHz, identifica sondas automáticamente, las decodifica, y sube datos a sondehub.org/radiosondy.info en tiempo real. Corriendo 24/7 en una Raspberry Pi con RTL-SDR constituye una estación meteorológica amateur.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR + antena VHF omnidireccional o yagi 403 MHz.</p>
+<p><strong>GitHub:</strong> <code>github.com/projecthorus/radiosonde_auto_rx</code></p>
+<hr />
+<h3 id="87-nrsc5-radio-hd">8.7 NRSC5 — radio HD</h3>
+<p><strong>¿Qué es?</strong> NRSC-5 es el estándar de radio digital implementado en EE.UU. bajo el nombre comercial "HD Radio". Transmite datos digitales comprimidos en dos bandas laterales adyacentes a la señal FM analógica existente — el receptor puede escuchar la versión digital de mayor calidad cuando la señal es buena. El protocolo estuvo cerrado por años hasta que fue reverse-engineered en 2017.</p>
+<p><strong>¿Qué podés hacer con él?</strong>
+- Decodificar audio digital HD Radio de emisoras que transmitan en EE.UU.
+- Recibir metadatos de programación: nombre del artista, canción, álbum, y en algunas emisoras imágenes de portada
+- Recibir datos de tráfico y clima embebidos en la señal HD Radio</p>
+<p><strong>Relevancia para Costa Rica:</strong> prácticamente nula — HD Radio solo existe en EE.UU. y algunos mercados donde Ibiquity tiene licencia. Las emisoras costarricenses usan FM analógico estándar. Sin embargo, es un caso de estudio interesante de reverse engineering de protocolo propietario.</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR + antena FM. Funciona directamente en las frecuencias FM (87.5–108 MHz).</p>
+<p><strong>En DragonOS:</strong> <code>nrsc5</code> en <code>/usr/src/</code> — incluye GUI y versión CLI.</p>
+<p><strong>GitHub:</strong> <code>github.com/theori-io/nrsc5</code></p>
+<hr />
+<h3 id="88-js8call-wsjt-x-modos-debiles-hf">8.8 JS8Call / WSJT-X — modos débiles HF</h3>
+<p><strong>¿Qué es?</strong> WSJT-X implementa los modos de radio de señal extremadamente débil diseñados por Joe Taylor (K1JT, Nobel de Física 1993). FT8 es el modo estrella — permite comunicación digital confiable con señales 20 dB por debajo del nivel de ruido del receptor, usando ciclos estrictos de 15 segundos. JS8Call extiende FT8 para mensajería completa tipo SMS sobre radio HF, haciendo posible comunicación de texto en condiciones donde ninguna otra modalidad funcionaría.</p>
+<p><strong>WSJT-X — modos disponibles:</strong>
+- <strong>FT8</strong> — el más popular: ciclos de 15s, -20 dB SNR, intercambia callsign y grid locator
+- <strong>FT4</strong> — más rápido (7.5s), menos sensible, para concursos
+- <strong>JT65</strong> — precursor de FT8, 60s por ciclo, más lento
+- <strong>WSPR</strong> — Weak Signal Propagation Reporter, beacons de muy baja potencia para mapear propagación HF
+- <strong>MSK144</strong> — para comunicaciones por scatter meteórico (rebote en estelas de meteoros)</p>
+<p><strong>JS8Call:</strong>
+- Basado en FT8 pero permite mensajes de texto completos
+- No requiere licencia para RECIBIR — solo para transmitir
+- Ideal para redes de emergencia HF digitales
+- Compatible con APRS via JS8Call gateway</p>
+<p><strong>¿Qué podés hacer con SDR?</strong>
+- Recibir FT8/FT4/WSPR en cualquier banda HF — monitorear la actividad de radioaficionados en todo el mundo
+- Ver en tiempo real en PSKReporter qué estaciones están siendo recibidas desde tu ubicación
+- Analizar propagación HF — cuántas bandas abiertas hay y hacia qué partes del mundo
+- Para TRANSMITIR se requiere licencia de radioaficionado (LIC en CR) y radio con TX</p>
+<p><strong>Frecuencias principales FT8 (bandas más activas):</strong>
+- 14.074 MHz (20m) — la banda más activa, abierta la mayor parte del día
+- 7.074 MHz (40m) — activo de noche, propagación regional/continental
+- 21.074 MHz (15m) — activo en picos solares, DX intercontinental
+- 144.174 MHz (2m) — FT8 en VHF, comunicaciones locales/ES</p>
+<p><strong>Flujo SDR → WSJT-X:</strong> RTL-SDR en modo direct sampling → GQRX (sintonizado en banda HF, demodulación USB) → audio pipe → WSJT-X (decodificación FT8)</p>
+<p class="hw-req"><strong>Hardware:</strong> RTL-SDR v3 en direct sampling Q para HF (sin upconverter, con limitaciones de sensibilidad). Para mejor recepción: SDRplay RSP1A o Airspy HF+ con antena de hilo largo.</p>
+<p><strong>Puerto en DragonOS:</strong> WSJT-X y JS8Call en menú de aplicaciones</p>
+<hr />
+<h2 id="apendice-a-hardware-compatible">Apéndice A — Hardware compatible</h2>
+<table>
+<thead>
+<tr>
+<th>Hardware</th>
+<th>Rango de frecuencia</th>
+<th>Tx/Rx</th>
+<th>Casos de uso ideales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RTL-SDR v3/v4</td>
+<td>500 kHz – 1766 MHz</td>
+<td>Solo Rx</td>
+<td>ADS-B, ACARS, APRS, AIS, NOAA, FM</td>
+</tr>
+<tr>
+<td>Airspy R2</td>
+<td>24 – 1800 MHz</td>
+<td>Solo Rx</td>
+<td>Todo lo de RTL con mejor calidad</td>
+</tr>
+<tr>
+<td>Airspy HF+</td>
+<td>0.5 kHz – 31 MHz / 60 – 260 MHz</td>
+<td>Solo Rx</td>
+<td>HF-DL, HF, shortwave</td>
+</tr>
+<tr>
+<td>HackRF One</td>
+<td>1 MHz – 6 GHz</td>
+<td>Tx+Rx (half duplex)</td>
+<td>Transmisión, replay, análisis</td>
+</tr>
+<tr>
+<td>LimeSDR</td>
+<td>100 kHz – 3.8 GHz</td>
+<td>Tx+Rx (full duplex)</td>
+<td>LTE, GSM, 5G research</td>
+</tr>
+<tr>
+<td>BladeRF</td>
+<td>300 MHz – 3.8 GHz</td>
+<td>Tx+Rx (full duplex)</td>
+<td>Telecom research</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="apendice-b-frecuencias-de-referencia-rapida">Apéndice B — Frecuencias de referencia rápida</h2>
+<table>
+<thead>
+<tr>
+<th>Señal</th>
+<th>Frecuencia</th>
+<th>Protocolo</th>
+<th>Herramienta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADS-B (aviones posición)</td>
+<td>1090 MHz</td>
+<td>ADS-B</td>
+<td>dump1090</td>
+</tr>
+<tr>
+<td>ACARS (mensajes avión-tierra)</td>
+<td>129.125 / 130.025 / 131.550 MHz</td>
+<td>ACARS</td>
+<td>acarsdec</td>
+</tr>
+<tr>
+<td>VDL Mode 2</td>
+<td>136.900 MHz</td>
+<td>VDL2</td>
+<td>dumpvdl2</td>
+</tr>
+<tr>
+<td>L-Band Inmarsat</td>
+<td>1545 / 1555 MHz</td>
+<td>ACARS/voice</td>
+<td>Jaero</td>
+</tr>
+<tr>
+<td>Iridium</td>
+<td>1616 – 1626.5 MHz</td>
+<td>Iridium</td>
+<td>iridium-toolkit</td>
+</tr>
+<tr>
+<td>APRS</td>
+<td>144.390 MHz (IARU R2)</td>
+<td>AX.25</td>
+<td>Direwolf</td>
+</tr>
+<tr>
+<td>AIS (barcos)</td>
+<td>161.975 / 162.025 MHz</td>
+<td>AIS</td>
+<td>varios</td>
+</tr>
+<tr>
+<td>NOAA weather sat</td>
+<td>137.100 / 137.620 / 137.912 MHz</td>
+<td>APT</td>
+<td>SatDump</td>
+</tr>
+<tr>
+<td>POCSAG / pager</td>
+<td>152 – 158 MHz (varía por país)</td>
+<td>POCSAG</td>
+<td>multimon-ng</td>
+</tr>
+<tr>
+<td>FM broadcast</td>
+<td>87.5 – 108 MHz</td>
+<td>WFM</td>
+<td>GQRX / SDR++</td>
+</tr>
+<tr>
+<td>GSM 850 (downlink CR)</td>
+<td>869 – 894 MHz</td>
+<td>GSM</td>
+<td>gr-gsm</td>
+</tr>
+<tr>
+<td>LTE B4 (downlink CR)</td>
+<td>2110 – 2155 MHz</td>
+<td>LTE</td>
+<td>srsRAN</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="apendice-c-glosario-de-siglas">Apéndice C — Glosario de siglas</h2>
+<table>
+<thead>
+<tr>
+<th>Sigla</th>
+<th>Significado</th>
+<th>Contexto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ACARS</strong></td>
+<td>Aircraft Communications Addressing and Reporting System</td>
+<td>Mensajería digital avión-tierra, VHF y satélite</td>
+</tr>
+<tr>
+<td><strong>ADS-B</strong></td>
+<td>Automatic Dependent Surveillance–Broadcast</td>
+<td>Posición GPS que transmite cada avión en 1090 MHz</td>
+</tr>
+<tr>
+<td><strong>AIS</strong></td>
+<td>Automatic Identification System</td>
+<td>Identificación y posición de embarcaciones marítimas</td>
+</tr>
+<tr>
+<td><strong>AM</strong></td>
+<td>Amplitude Modulation</td>
+<td>Modulación en amplitud, usada en HF y aviación</td>
+</tr>
+<tr>
+<td><strong>APRS</strong></td>
+<td>Automatic Packet Reporting System</td>
+<td>Red de telemetría/mensajería sobre radio AX.25</td>
+</tr>
+<tr>
+<td><strong>APT</strong></td>
+<td>Automatic Picture Transmission</td>
+<td>Protocolo de imagen de satélites NOAA meteorológicos</td>
+</tr>
+<tr>
+<td><strong>AX.25</strong></td>
+<td>Amateur X.25</td>
+<td>Protocolo de enlace de datos usado en radio amateur</td>
+</tr>
+<tr>
+<td><strong>BTS</strong></td>
+<td>Base Transceiver Station</td>
+<td>Antena/estación base de red celular</td>
+</tr>
+<tr>
+<td><strong>C-Band</strong></td>
+<td>Frequency band ~4–8 GHz</td>
+<td>Banda usada por satélites geoestacionarios de comunicación</td>
+</tr>
+<tr>
+<td><strong>CCIR</strong></td>
+<td>Comité Consultatif International des Radiocommunications</td>
+<td>Organismo predecesor del ITU-R, define estándares de radio</td>
+</tr>
+<tr>
+<td><strong>DSP</strong></td>
+<td>Digital Signal Processing</td>
+<td>Procesamiento digital de señales</td>
+</tr>
+<tr>
+<td><strong>DSD</strong></td>
+<td>Digital Speech Decoder</td>
+<td>Decodificador de voz digital P25, DMR, NXDN, etc.</td>
+</tr>
+<tr>
+<td><strong>FM</strong></td>
+<td>Frequency Modulation</td>
+<td>Modulación en frecuencia (radio FM broadcast, VHF/UHF)</td>
+</tr>
+<tr>
+<td><strong>FLEX</strong></td>
+<td>—</td>
+<td>Protocolo de mensajería de buscapersonas de alta velocidad</td>
+</tr>
+<tr>
+<td><strong>FSK</strong></td>
+<td>Frequency Shift Keying</td>
+<td>Modulación digital por desplazamiento de frecuencia</td>
+</tr>
+<tr>
+<td><strong>GNSS</strong></td>
+<td>Global Navigation Satellite System</td>
+<td>Sistema global de navegación por satélite (GPS, GLONASS, Galileo)</td>
+</tr>
+<tr>
+<td><strong>GPS</strong></td>
+<td>Global Positioning System</td>
+<td>Sistema de posicionamiento satelital de EE.UU.</td>
+</tr>
+<tr>
+<td><strong>GSM</strong></td>
+<td>Global System for Mobile Communications</td>
+<td>Estándar de red celular 2G</td>
+</tr>
+<tr>
+<td><strong>HF</strong></td>
+<td>High Frequency</td>
+<td>Banda de 3–30 MHz (shortwave / onda corta)</td>
+</tr>
+<tr>
+<td><strong>HF-DL</strong></td>
+<td>HF Data Link</td>
+<td>Protocolo ACARS sobre HF para vuelos transoceánicos</td>
+</tr>
+<tr>
+<td><strong>HRPT</strong></td>
+<td>High Resolution Picture Transmission</td>
+<td>Imagen de alta resolución de satélites meteorológicos</td>
+</tr>
+<tr>
+<td><strong>IQ</strong></td>
+<td>In-phase / Quadrature</td>
+<td>Representación de señales RF en SDR (parte real e imaginaria)</td>
+</tr>
+<tr>
+<td><strong>ITU</strong></td>
+<td>International Telecommunication Union</td>
+<td>Organismo de la ONU que regula el espectro radioeléctrico</td>
+</tr>
+<tr>
+<td><strong>L-Band</strong></td>
+<td>Frequency band ~1–2 GHz</td>
+<td>Banda usada por Inmarsat, Iridium, GPS, aviación satcom</td>
+</tr>
+<tr>
+<td><strong>LEO</strong></td>
+<td>Low Earth Orbit</td>
+<td>Órbita terrestre baja (~200–2000 km), usada por Iridium, NOAA</td>
+</tr>
+<tr>
+<td><strong>LNA</strong></td>
+<td>Low Noise Amplifier</td>
+<td>Amplificador de bajo ruido, mejora sensibilidad del receptor</td>
+</tr>
+<tr>
+<td><strong>LoRa</strong></td>
+<td>Long Range</td>
+<td>Modulación de radio de largo alcance, usada en IoT y Meshtastic</td>
+</tr>
+<tr>
+<td><strong>LTE</strong></td>
+<td>Long Term Evolution</td>
+<td>Estándar de red celular 4G</td>
+</tr>
+<tr>
+<td><strong>MPEG</strong></td>
+<td>Moving Picture Experts Group</td>
+<td>Estándar de compresión de audio/video</td>
+</tr>
+<tr>
+<td><strong>NFM</strong></td>
+<td>Narrow FM</td>
+<td>FM angosta, usada en radio VHF/UHF de comunicaciones</td>
+</tr>
+<tr>
+<td><strong>NRSC-5</strong></td>
+<td>National Radio Systems Committee–5</td>
+<td>Estándar de radio HD (digital) en banda FM de EE.UU.</td>
+</tr>
+<tr>
+<td><strong>NXDN</strong></td>
+<td>—</td>
+<td>Protocolo de radio digital de Icom/Kenwood</td>
+</tr>
+<tr>
+<td><strong>OsmocomBB</strong></td>
+<td>Open Source Mobile Communications Baseband</td>
+<td>Firmware open source para chipsets de celulares 2G</td>
+</tr>
+<tr>
+<td><strong>P25</strong></td>
+<td>Project 25 / APCO-25</td>
+<td>Estándar de radio digital para servicios de emergencia de EE.UU.</td>
+</tr>
+<tr>
+<td><strong>POCSAG</strong></td>
+<td>Post Office Code Standardisation Advisory Group</td>
+<td>Protocolo de mensajería de buscapersonas unidireccional</td>
+</tr>
+<tr>
+<td><strong>PSK</strong></td>
+<td>Phase Shift Keying</td>
+<td>Modulación digital por desplazamiento de fase</td>
+</tr>
+<tr>
+<td><strong>QAM</strong></td>
+<td>Quadrature Amplitude Modulation</td>
+<td>Modulación de amplitud en cuadratura, usada en LTE/cable</td>
+</tr>
+<tr>
+<td><strong>RF</strong></td>
+<td>Radio Frequency</td>
+<td>Frecuencias de radio (generalmente 3 kHz – 300 GHz)</td>
+</tr>
+<tr>
+<td><strong>RTL-SDR</strong></td>
+<td>Realtek SDR</td>
+<td>Dongle SDR basado en chip Realtek RTL2832U, muy económico</td>
+</tr>
+<tr>
+<td><strong>RX</strong></td>
+<td>Receive</td>
+<td>Modo recepción</td>
+</tr>
+<tr>
+<td><strong>S-Band</strong></td>
+<td>Frequency band ~2–4 GHz</td>
+<td>Banda usada por satélites meteorológicos de alta resolución</td>
+</tr>
+<tr>
+<td><strong>SDR</strong></td>
+<td>Software Defined Radio</td>
+<td>Radio definida por software — el hardware es mínimo, la lógica es código</td>
+</tr>
+<tr>
+<td><strong>SIGINT</strong></td>
+<td>Signals Intelligence</td>
+<td>Inteligencia de señales, interceptación y análisis de comunicaciones RF</td>
+</tr>
+<tr>
+<td><strong>SNR</strong></td>
+<td>Signal to Noise Ratio</td>
+<td>Relación señal a ruido, métrica de calidad de recepción</td>
+</tr>
+<tr>
+<td><strong>SSTV</strong></td>
+<td>Slow Scan Television</td>
+<td>Transmisión de imágenes estáticas por radio, muy lenta</td>
+</tr>
+<tr>
+<td><strong>SSB</strong></td>
+<td>Single Sideband</td>
+<td>Modulación de banda lateral única, eficiente para HF de voz</td>
+</tr>
+<tr>
+<td><strong>TCP</strong></td>
+<td>Transmission Control Protocol</td>
+<td>Protocolo de red orientado a conexión</td>
+</tr>
+<tr>
+<td><strong>TETRA</strong></td>
+<td>Terrestrial Trunked Radio</td>
+<td>Estándar de radio digital troncal europeo (policía, emergencias)</td>
+</tr>
+<tr>
+<td><strong>TX</strong></td>
+<td>Transmit</td>
+<td>Modo transmisión</td>
+</tr>
+<tr>
+<td><strong>UHF</strong></td>
+<td>Ultra High Frequency</td>
+<td>Banda de 300 MHz – 3 GHz</td>
+</tr>
+<tr>
+<td><strong>USRP</strong></td>
+<td>Universal Software Radio Peripheral</td>
+<td>Hardware SDR de alta gama de Ettus Research / NI</td>
+</tr>
+<tr>
+<td><strong>VDL</strong></td>
+<td>VHF Digital Link</td>
+<td>Enlace digital VHF para aviación, versión digital de ACARS</td>
+</tr>
+<tr>
+<td><strong>VHF</strong></td>
+<td>Very High Frequency</td>
+<td>Banda de 30–300 MHz</td>
+</tr>
+<tr>
+<td><strong>VFO</strong></td>
+<td>Variable Frequency Oscillator</td>
+<td>Sintonizador de frecuencia variable, término heredado de radio analógica</td>
+</tr>
+<tr>
+<td><strong>WFM</strong></td>
+<td>Wide FM</td>
+<td>FM ancha, usada en radio FM broadcast (87.5–108 MHz)</td>
+</tr>
+<tr>
+<td><strong>WSJT-X</strong></td>
+<td>Weak Signal Joe Taylor</td>
+<td>Software para modos de señal débil HF (FT8, FT4, JT65, etc.)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Este documento es una guía viva. Cada sección se actualiza a medida que se investiga cada herramienta en profundidad.</em></p>
+  </main>
+</div>
+
+<button id="scroll-top" aria-label="Volver arriba" title="Volver arriba">↑</button>
+
+<script>
+// Scroll-to-top
+const scrollBtn = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 400);
+});
+scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// Toggle sidebar mobile
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggle-sidebar');
+toggleBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
+document.getElementById('main').addEventListener('click', () => {
+  if (window.innerWidth <= 700) sidebar.classList.remove('open');
+});
+
+// Active TOC link on scroll
+const h2s = document.querySelectorAll('#main h2[id], #main h3[id]');
+const tocLinks = document.querySelectorAll('#sidebar .toc-h2, #sidebar .toc-h3');
+
+function setActiveToc() {
+  let current = '';
+  h2s.forEach(el => {
+    if (window.scrollY + 80 >= el.offsetTop) current = el.id;
+  });
+  tocLinks.forEach(li => {
+    const a = li.querySelector('a');
+    const href = a.getAttribute('href').slice(1);
+    li.classList.toggle('active', href === current);
+  });
+}
+window.addEventListener('scroll', setActiveToc, { passive: true });
+setActiveToc();
+
+// Añadir número a cada h2 para el pseudo-element
+document.querySelectorAll('#main h2').forEach((el, i) => {
+  const n = String(i + 1).padStart(2, '0');
+  // Solo para las 8 categorías (no apéndices)
+  if (i < 8) el.setAttribute('data-n', n);
+});
+</script>
+
+</body>
+</html>
