@@ -1,5 +1,9 @@
 # 📡 DragonOS — Guía de Herramientas por Categoría
 
+---
+Nota de autor: fue hecho todo con ai. Claude ai MODELO SONNET 4.6 max. Lo hice porque no encontr[e buena info en la web entonces empece a preguntara ai, pero mejor de una vez que fuera algo productivo.
+---
+
 > **A community reference guide for DragonOS SDR tools, written in Spanish for the Latin American technical community.**
 
 [![DragonOS](https://img.shields.io/badge/DragonOS-Noble%2024.04-cyan?style=flat-square)](https://sourceforge.net/projects/dragonos-focal/)
